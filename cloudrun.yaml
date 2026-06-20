@@ -1,0 +1,74 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: gramgyan-backend
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        # ── Scaling ────────────────────────────────────────────────────────
+        autoscaling.knative.dev/minScale: "1"       # Keep 1 warm instance (no cold starts)
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/cpu-throttling: "false"  # Always-on CPU (needed for Bull workers)
+
+        # ── Cloud SQL (if migrating from local PG) ─────────────────────────
+        # run.googleapis.com/cloudsql-instances: gramgyan-production:asia-south1:gramgyan-db
+
+        # ── Startup probe ──────────────────────────────────────────────────
+        run.googleapis.com/startup-cpu-boost: "true"
+    spec:
+      serviceAccountName: gramgyan-sa@gramgyan-production.iam.gserviceaccount.com
+      containerConcurrency: 80    # Tune for 59 Tok/s model connection budget
+      timeoutSeconds: 300         # Allow long STEM/vision model completions
+
+      containers:
+        - image: gcr.io/gramgyan-production/gramgyan-backend:latest
+          ports:
+            - containerPort: 3001
+
+          # ── Resource Sizing (protects 59 Tok/s model connections) ─────────
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "512Mi"
+
+          # ── Environment Injection ─────────────────────────────────────────
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3001"
+            - name: LOG_LEVEL
+              value: info
+            - name: LOG_FORMAT
+              value: json
+
+          # ── Secrets (from Secret Manager) ─────────────────────────────────
+          envFrom:
+            - secretRef:
+                name: gramgyan-backend-secrets
+
+          # ── Liveness & Readiness ─────────────────────────────────────────
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 2
+            timeoutSeconds: 5

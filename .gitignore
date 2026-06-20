@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/
+*.js.map
+*.d.ts.map
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
