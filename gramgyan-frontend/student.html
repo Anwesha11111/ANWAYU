@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Student Workspace</title>
+  <meta name="description" content="AI-powered learning workspace for rural students — chat, STEM reasoning, offline sync, streak tracking.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .app-layout { grid-template-columns: 260px 1fr 280px; transition: var(--transition); }
+    .sidebar.collapsed { display: none !important; }
+    body {
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(34,211,238,0.15) 0%, transparent 60%);
+    }
+    .video-item, .lesson-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      margin-bottom: 8px;
+    }
+    .video-item:hover, .lesson-item:hover {
+      border-color: var(--accent-student);
+      background: rgba(34,211,238,0.04);
+    }
+    .video-list-container, .lesson-list-container {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link active-s">🎒 Student</a>
+      <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link">🏢 Company</a>
+      <a href="ngo.html" class="nav-link">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills Profile</a>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar('left')">📐 Toggle Profile</button>
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar('right')">🛡️ Toggle Security</button>
+    </div>
+  </nav>
+
+  <div class="app-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Profile -->
+      <div class="sidebar-section">
+        <h4>👤 Student Profile</h4>
+        <div class="profile-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="profile-avatar">R</div>
+            <div>
+              <div class="profile-name">Ravi Kumar Sharma</div>
+              <div class="profile-meta">Class 10 · Alwar, Rajasthan</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:8px;">
+            <span style="color:var(--text-muted);">Zone</span>
+            <span class="badge badge-yellow">RURAL</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:8px;">
+            <span style="color:var(--text-muted);">State</span>
+            <span style="font-weight:600;">Rajasthan (RJ)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:12px;">
+            <span style="color:var(--text-muted);">Device</span>
+            <span style="font-weight:600;">Shared Phone</span>
+          </div>
+
+          <a href="skills.html" class="btn btn-cyan btn-xs w-full" style="margin-bottom:12px;display:flex;justify-content:center;">🏆 View Public Skills Page</a>
+
+          <!-- Streak -->
+          <div class="streak-display">
+            <div>
+              <div class="streak-count">🔥 <span id="streak-count">7</span></div>
+              <div class="streak-label">Day Streak</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.78rem;color:var(--text-muted);">Longest</div>
+              <div style="font-size:1rem;font-weight:800;color:var(--color-warning);">14 days</div>
+            </div>
+          </div>
+          <!-- Streak controls -->
+          <div id="streak-toast" class="hidden" style="margin-top:12px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.3);border-radius:10px;padding:12px;">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--color-danger);margin-bottom:6px;">⚠️ Streak Broken!</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px;">Power outage in your area? Use your grace cushion.</div>
+            <button class="btn btn-green btn-sm w-full" onclick="repairStreak()">Use Grace Cushion ❄️</button>
+          </div>
+          <button class="btn btn-ghost btn-xs w-full" style="margin-top:10px;" onclick="breakStreak()">Simulate Streak Break</button>
+        </div>
+      </div>
+
+      <!-- Network Adapter -->
+      <div class="sidebar-section">
+        <h4>📶 Network Adapter</h4>
+        <div class="net-grid">
+          <button class="net-btn active" data-net="WiFi" onclick="setNetwork(this)">WiFi</button>
+          <button class="net-btn" data-net="4G" onclick="setNetwork(this)">4G</button>
+          <button class="net-btn" data-net="3G" onclick="setNetwork(this)">3G</button>
+          <button class="net-btn" data-net="2G" onclick="setNetwork(this)">2G</button>
+        </div>
+        <div class="net-status" id="net-status">
+          ✅ WiFi — Rich multimedia streaming enabled (1280×720 · 2500 kbps).
+        </div>
+      </div>
+
+      <!-- Offline Sync Journal -->
+      <div class="sidebar-section">
+        <h4>🔄 Offline Sync Journal</h4>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:0.78rem;color:var(--text-muted);">Queue: <strong id="journal-count">0</strong> ops</span>
+          <button class="btn btn-ghost btn-xs" onclick="syncDelta()">Sync Δ</button>
+        </div>
+        <div class="journal-list" id="journal-list">
+          <div class="journal-empty">Journal empty. Go offline to queue actions.</div>
+        </div>
+        <button class="btn btn-danger btn-sm w-full" style="margin-top:10px;" id="toggle-offline-btn" onclick="toggleOffline()">
+          Simulate Network Outage
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main-area">
+
+      <!-- Suggest Videos & Lesson Plans Grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px;background:var(--bg-card);border-bottom:1px solid var(--border);">
+        <!-- Videos Column -->
+        <div>
+          <h4 style="font-size:0.85rem;color:var(--accent-student);margin-bottom:8px;font-weight:800;">📺 Suggested Video Lessons</h4>
+          <div class="video-list-container">
+            <div class="video-item" onclick="playVideo('Drip Irrigation Basics', 'Module 4 · Learn how to optimize water distribution in dry fields.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Drip Irrigation Basics</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">12 min · Hindi & Telugu</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
+            <div class="video-item" onclick="playVideo('Organic Fertilizer Prep', 'Module 5 · Steps to brew compost tea and nutrient solutions.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Organic Fertilizer Prep</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">8 min · Hindi & Marathi</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
+            <div class="video-item" onclick="playVideo('Solar Grid Maintenance', 'Module 2 · Cleaning dust storms from panels safely.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Solar Grid Maintenance</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">15 min · Rajasthani & English</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lesson Plans Column -->
+        <div>
+          <h4 style="font-size:0.85rem;color:var(--accent-teacher);margin-bottom:8px;font-weight:800;">📝 Interactive Lesson Plans</h4>
+          <div class="lesson-list-container">
+            <div class="lesson-item" onclick="prefill('Show crop rotation plan details for nitrogen fixing legumes')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Legume Nitrogen Rotation</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 2 · 4 steps</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+            <div class="lesson-item" onclick="prefill('How do I calculate rainwater storage capacity of a Kund?')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Rainwater Runoff Calculus</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 3 · Practical math</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+            <div class="lesson-item" onclick="prefill('Explain crop diseases and natural remedies')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Natural Pest Management</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 1 · Organic chemistry</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Player Header -->
+      <div id="media-rich" class="media-card" style="border-radius:0;">
+        <div class="media-preview" style="height:120px;">
+          <div class="media-badges">
+            <span class="badge badge-cyan" id="player-network">WiFi · 1080p</span>
+            <span class="badge badge-violet" id="player-title">Module 4 · Organic Farming</span>
+          </div>
+          <div class="play-btn-ring" onclick="alert('Starting stream play...')">▶</div>
+        </div>
+        <div class="media-info">
+          <h4 id="player-header">Drip Irrigation & Water Conservation (Interactive Lecture)</h4>
+          <p id="player-desc">HD video tutorial with animated diagrams · Available in Hindi, Telugu, Marathi</p>
+        </div>
+      </div>
+
+      <!-- Chat -->
+      <div class="chat-container">
+
+        <!-- Model Ribbon -->
+        <div class="model-ribbon">
+          <div class="model-tab active" data-model="standard_dialogue" onclick="setModel(this)">
+            <span class="tab-dot c"></span>
+            <div>
+              <div class="model-tab-name">AI Mentor</div>
+              <div class="model-tab-meta">Nemotron · 90 Tok/s</div>
+            </div>
+          </div>
+          <div class="model-tab" data-model="project_guidance" onclick="setModel(this)">
+            <span class="tab-dot v"></span>
+            <div>
+              <div class="model-tab-name">Project Guide</div>
+              <div class="model-tab-meta">Ultra 550B · 59 Tok/s</div>
+            </div>
+          </div>
+          <div class="model-tab" data-model="stem_reasoning" onclick="setModel(this)">
+            <span class="tab-dot s"></span>
+            <div>
+              <div class="model-tab-name">STEM Reason</div>
+              <div class="model-tab-meta">Qwen3 Think · 85 Tok/s</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lang bar -->
+        <div class="chat-lang-bar">
+          🌐 Language:
+          <select class="lang-select" id="lang-select">
+            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="en" selected>English</option>
+            <option value="bn">Bengali</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="ta">Tamil</option>
+            <option value="gu">Gujarati</option>
+            <option value="kn">Kannada</option>
+            <option value="ml">Malayalam</option>
+            <option value="pa">Punjabi</option>
+            <option value="or">Odia</option>
+            <option value="ur">Urdu</option>
+          </select>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chat-messages">
+          <div class="sys-msg">Connected to GramGyan Multi-Model Router — select a model above and start chatting!</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="chat-footer">
+          <div class="chat-footer-row">
+            <textarea id="chat-input" placeholder="Ask anything — homework, farming, careers, math…" onkeydown="handleKey(event)"></textarea>
+            <button class="btn btn-cyan" onclick="sendMessage()">Send</button>
+          </div>
+          <div class="shortcut-strip">
+            <span>Try:</span>
+            <button class="shortcut-btn" onclick="prefill('Explain organic compost methods in simple Hindi')">🌱 Compost</button>
+            <button class="shortcut-btn" onclick="prefill('Create a step-by-step crop rotation plan for my field')">🗺️ Crop Plan</button>
+            <button class="shortcut-btn" onclick="prefill('Solve x² − 5x + 6 = 0 and show working')">🔢 Math</button>
+            <button class="shortcut-btn" onclick="prefill('What careers can I pursue after Class 10 in rural Rajasthan?')">🎯 Careers</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar sidebar-right">
+
+      <!-- Safety Stats -->
+      <div class="sidebar-section">
+        <h4>🛡️ Safety Gateway</h4>
+        <div class="card" style="padding:16px;gap:10px;display:flex;flex-direction:column;">
+          <div class="stat-row">
+            <div class="stat-pill" style="padding:10px;">
+              <div class="snum" style="font-size:1.4rem;color:var(--color-danger);" id="stat-blocked">0</div>
+              <div class="slabel">Links Blocked</div>
+            </div>
+            <div class="stat-pill" style="padding:10px;">
+              <div class="snum" style="font-size:1.4rem;color:var(--color-warning);" id="stat-masked">0</div>
+              <div class="slabel">Contacts Masked</div>
+            </div>
+          </div>
+          <div class="log-panel">
+            <div class="log-panel-header">Sanitizer Log</div>
+            <div class="log-panel-body" id="sanitizer-log">
+              <div class="log-entry-sys">[system] Filter engine listening…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competency Portfolio -->
+      <div class="sidebar-section">
+        <h4>📋 Competency Portfolio</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="comp-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <h4>Organic Farming</h4>
+              <span class="badge badge-green">✅ Verified</span>
+            </div>
+            <div class="comp-bar-wrap"><div class="comp-bar" style="width:85%"></div></div>
+            <div class="comp-meta"><span>85% · Passed</span><span>⭐⭐⭐⭐</span></div>
+          </div>
+          <div class="comp-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <h4>Basic Mathematics</h4>
+              <span class="badge badge-yellow">⏳ Review</span>
+            </div>
+            <div class="comp-bar-wrap"><div class="comp-bar" style="width:62%;background:linear-gradient(90deg,var(--color-warning),var(--accent-company));"></div></div>
+            <div class="comp-meta"><span>62% · Pending</span><span>⭐⭐⭐</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SRE Controls -->
+      <div class="sidebar-section">
+        <h4>🚨 SRE Controls</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-danger btn-sm" onclick="crashDB()">Crash DB Pool</button>
+          <button class="btn btn-orange btn-sm" onclick="spikeMemory()">Spike Memory</button>
+          <button class="btn btn-green btn-sm" onclick="restoreSystem()">Restore System ✓</button>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Health Modal -->
+  <div class="modal-backdrop hidden" id="health-modal" onclick="if(event.target===this)closeHealthModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>⚡ System Health — <code style="font-size:0.9rem;">/api/health</code></h2>
+        <button class="modal-close" onclick="closeHealthModal()">✕</button>
+      </div>
+      <div class="tele-grid">
+        <div class="tele-box">
+          <div class="tb-label">HTTP Status</div>
+          <div class="tb-value text-success" id="m-status">200 OK</div>
+        </div>
+        <div class="tele-box">
+          <div class="tb-label">DB Connections</div>
+          <div class="tb-value" id="m-db">10 / 10</div>
+        </div>
+        <div class="tele-box">
+          <div class="tb-label">Memory Load</div>
+          <div class="tb-value" id="m-mem">34.2% (180 MB)</div>
+        </div>
+        <div class="tele-box">
+          <div class="tb-label">Avg Latency</div>
+          <div class="tb-value" id="m-lat">14 ms</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-danger btn-sm" onclick="crashDB()">Crash DB</button>
+        <button class="btn btn-orange btn-sm" onclick="spikeMemory()">Spike Memory</button>
+        <button class="btn btn-green btn-sm" onclick="restoreSystem()">Restore</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeHealthModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── State ──
+    let currentModel = 'standard_dialogue';
+    let isOffline = false;
+    let isDbCrashed = false;
+    let isMemorySpiked = false;
+    let journalOps = [];
+    let streakDays = 7;
+    let blockedCount = 0;
+    let maskedCount = 0;
+
+    // ── Sidebar Toggler ──
+    function toggleSidebar(side) {
+      const layout = document.querySelector('.app-layout');
+      const sidebars = document.querySelectorAll('.sidebar');
+      if (side === 'left') {
+        sidebars[0].classList.toggle('collapsed');
+      } else {
+        sidebars[1].classList.toggle('collapsed');
+      }
+      
+      const leftColl = sidebars[0].classList.contains('collapsed');
+      const rightColl = sidebars[1].classList.contains('collapsed');
+      
+      if (leftColl && rightColl) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else if (leftColl) {
+        layout.style.gridTemplateColumns = '1fr 280px';
+      } else if (rightColl) {
+        layout.style.gridTemplateColumns = '260px 1fr';
+      } else {
+        layout.style.gridTemplateColumns = '260px 1fr 280px';
+      }
+    }
+
+    // ── Resource Playback ──
+    function playVideo(title, desc) {
+      document.getElementById('player-header').textContent = title;
+      document.getElementById('player-desc').textContent = desc;
+      document.getElementById('player-title').textContent = title;
+      addLog(`Loaded video tutorial: "${title}"`, 'ok');
+    }
+
+    // ── Network ──
+    const netConfigs = {
+      WiFi: { text: '✅ WiFi — Rich multimedia streaming enabled (1280×720 · 2500 kbps).', audio: false },
+      '4G': { text: '📶 4G — HD streaming enabled (854×480 · 1200 kbps).', audio: false },
+      '3G': { text: '🟡 3G — Low-res streaming (426×240 · 400 kbps). Larger images compressed.', audio: false },
+      '2G': { text: '🔴 2G — Audio-only mode. Video player hidden. Saving bandwidth.', audio: true }
+    };
+
+    function setNetwork(btn) {
+      document.querySelectorAll('.net-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const profile = btn.dataset.net;
+      const cfg = netConfigs[profile];
+      document.getElementById('net-status').textContent = cfg.text;
+      document.getElementById('media-rich').classList.toggle('hidden', cfg.audio);
+      document.getElementById('player-network').textContent = `${profile} Mode`;
+      addLog(`Network swapped → ${profile}`, 'sys');
+    }
+
+    // ── Model ──
+    function setModel(tab) {
+      document.querySelectorAll('.model-tab').forEach(t => b => b.classList.remove('active'));
+      document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentModel = tab.dataset.model;
+    }
+
+    // ── Prefill ──
+    function prefill(text) {
+      document.getElementById('chat-input').value = text;
+      document.getElementById('chat-input').focus();
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
+
+    // ── Chat / Sanitizer ──
+    function sanitize(text) {
+      let out = text, flagged = false;
+      const phoneRx = /(\+?[\d\s\-]{9,14})/g;
+      const emailRx = /[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/gi;
+      const urlRx   = /https?:\/\/[^\s]+/gi;
+      if (emailRx.test(text)) {
+        out = out.replace(/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/gi, '[⚠️ EMAIL REDACTED]');
+        maskedCount++; document.getElementById('stat-masked').textContent = maskedCount;
+        addLog('Masked personal email address', 'warn'); flagged = true;
+      }
+      if (urlRx.test(text)) {
+        out = out.replace(/https?:\/\/[^\s]+/gi, '[🚫 EXTERNAL LINK REMOVED]');
+        blockedCount++; document.getElementById('stat-blocked').textContent = blockedCount;
+        addLog('Blocked external URL in message', 'warn'); flagged = true;
+      }
+      return { out, flagged };
+    }
+
+    function sendMessage() {
+      const inp = document.getElementById('chat-input');
+      const raw = inp.value.trim();
+      if (!raw) return;
+      inp.value = '';
+
+      const { out, flagged } = sanitize(raw);
+
+      if (isOffline) {
+        const op = { id: Math.random().toString(36).slice(2,8), type:'CREATE', table:'competency_ledger', ts: Date.now() };
+        journalOps.push(op);
+        updateJournal();
+        addUserBubble(out);
+        addSysMsg('⚠️ Offline — message queued in sync journal.');
+        return;
+      }
+
+      addUserBubble(out);
+      if (flagged) addSafetyBanner();
+
+      // Auto-detect STEM
+      let model = currentModel;
+      const stemKw = ['solve','prove','integrate','algorithm','code','equation','velocity','derivative','calculate'];
+      if (stemKw.some(k => raw.toLowerCase().includes(k)) || raw.includes('`') || raw.includes('$')) {
+        model = 'stem_reasoning';
+        document.querySelectorAll('.model-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.model === 'stem_reasoning');
+        });
+        currentModel = 'stem_reasoning';
+        addLog('STEM pattern detected → routed to Qwen3 Thinking', 'ok');
+      }
+
+      simulateResponse(out, model);
+    }
+
+    const MOCK_RESPONSES = {
+      standard_dialogue: [
+        "Organic compost requires nitrogen-rich green matter (kitchen scraps, fresh leaves) balanced with carbon-rich brown matter (dry twigs, cardboard) at a 1:3 ratio. Maintain moisture like a wrung-out sponge and turn every 10 days to maximise aerobic decomposition.",
+        "For a career after Class 10 in rural Rajasthan, consider: 🌾 Agriculture extension officer, 🔧 ITI vocational trade, 💻 Data entry operator, or 📱 Mobile repair technician. GramGyan's competency records can be shared directly with local employers.",
+        "Water conservation in arid regions uses techniques like bunding, check dams, rooftop rainwater harvesting, and drip irrigation. The Rajasthan government's Mukhyamantri Jal Swavlamban Abhiyan scheme funds these structures in your district."
+      ],
+      project_guidance: [
+        "Here is your step-by-step crop rotation plan:\n\n1. Season 1 — Legumes (peas/beans) in Zone A to fix atmospheric nitrogen\n2. Season 2 — Brassicas (cabbage/cauliflower) following legumes to consume soil nitrates\n3. Season 3 — Root vegetables (carrots/radish) to break soil compaction\n4. Season 4 — Cereal crop (wheat/millet) to clear field for next cycle\n\nRotate zones A→B→C→D each season to prevent pest build-up.",
+        "Your rural digital business plan:\n\n• Phase 1: Register on UDYAM portal (MSME) — free, takes 30 min online\n• Phase 2: Open Jan Dhan account for digital payments\n• Phase 3: Get CSC (Common Service Centre) franchise from MeitY\n• Phase 4: Offer G2C services — Aadhaar printing, bank BC, form filling\n\nExpected monthly revenue: ₹8,000–15,000 from service charges."
+      ],
+      stem_reasoning: {
+        think: "User wants to solve x² − 5x + 6 = 0. I'll use factoring method. Looking for two numbers that multiply to 6 and add to −5. Those are −2 and −3. So (x−2)(x−3) = 0.",
+        answer: "For x² − 5x + 6 = 0, we factor:\n\n(x − 2)(x − 3) = 0\n\n∴ x = 2 or x = 3 ✓\n\nVerification:\n• x=2: 4 − 10 + 6 = 0 ✓\n• x=3: 9 − 15 + 6 = 0 ✓\n\nUsing the quadratic formula as an alternate check:\nx = [5 ± √(25−24)] / 2 = [5 ± 1] / 2 → x = 3 or x = 2 ✓"
+      }
+    };
+
+    function simulateResponse(text, model) {
+      const box = document.getElementById('chat-messages');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble bot-bubble fade-in';
+      const names = { standard_dialogue:'AI Mentor (Nemotron)', project_guidance:'Project Guide (Ultra 550B)', stem_reasoning:'STEM Reasoner (Qwen3)' };
+      bubble.innerHTML = `<div class="sender" style="color:var(--accent-student);">${names[model] || 'AI Mentor'}</div><div class="msg-text"><span style="color:var(--text-muted);font-style:italic;">Thinking…</span></div>`;
+      box.appendChild(bubble);
+      box.scrollTop = box.scrollHeight;
+
+      const delay = model === 'stem_reasoning' ? 1500 : 800;
+
+      setTimeout(() => {
+        const content = bubble.querySelector('.msg-text');
+        content.innerHTML = '';
+
+        if (model === 'stem_reasoning') {
+          const r = MOCK_RESPONSES.stem_reasoning;
+          const acc = document.createElement('div');
+          acc.className = 'think-accordion';
+          acc.innerHTML = `<div class="think-header" onclick="this.nextElementSibling.classList.toggle('hidden')">🧠 View Thinking Process <span>▼</span></div><div class="think-body">${r.think}</div>`;
+          content.appendChild(acc);
+          typeText(content, r.answer, 18);
+        } else if (model === 'project_guidance') {
+          const msgs = MOCK_RESPONSES.project_guidance;
+          const resp = msgs[Math.floor(Math.random() * msgs.length)];
+          typeText(content, resp, 12);
+          setTimeout(() => {
+            const tasks = resp.split('\n').filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/,''));
+            if (tasks.length > 0) {
+              const board = document.createElement('div');
+              board.className = 'task-board';
+              tasks.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'task-item';
+                item.innerHTML = `<input type="checkbox" onchange="this.parentElement.classList.toggle('done',this.checked)"><span>${t}</span>`;
+                board.appendChild(item);
+              });
+              content.appendChild(board);
+            }
+          }, tasks => tasks.length * 12 + 1000);
+        } else {
+          const msgs = MOCK_RESPONSES.standard_dialogue;
+          typeText(content, msgs[Math.floor(Math.random() * msgs.length)], 15);
+        }
+        addLog(`Response complete (${names[model]})`, 'ok');
+      }, delay);
+    }
+
+    function typeText(el, text, speed) {
+      const p = document.createElement('p');
+      el.appendChild(p);
+      let i = 0;
+      const box = document.getElementById('chat-messages');
+      const t = setInterval(() => {
+        p.textContent += text[i++];
+        box.scrollTop = box.scrollHeight;
+        if (i >= text.length) clearInterval(t);
+      }, speed);
+    }
+
+    function addUserBubble(text) {
+      const box = document.getElementById('chat-messages');
+      const d = document.createElement('div');
+      d.className = 'chat-bubble user-bubble fade-in';
+      d.innerHTML = `<div class="sender">You</div><div class="msg-text">${text}</div>`;
+      box.appendChild(d);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function addSysMsg(text) {
+      const box = document.getElementById('chat-messages');
+      const d = document.createElement('div');
+      d.className = 'sys-msg fade-in';
+      d.textContent = text;
+      box.appendChild(d);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function addSafetyBanner() {
+      const box = document.getElementById('chat-messages');
+      const d = document.createElement('div');
+      d.className = 'safety-banner fade-in';
+      d.innerHTML = '🛡️ <strong>Safety Notice:</strong> This message was filtered. Personal contact details or links have been removed per GramGyan safety guidelines.';
+      box.appendChild(d);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // ── Offline ──
+    function toggleOffline() {
+      isOffline = !isOffline;
+      const btn = document.getElementById('toggle-offline-btn');
+      btn.textContent = isOffline ? 'Reconnect Network' : 'Simulate Network Outage';
+      btn.className = `btn btn-sm w-full ${isOffline ? 'btn-green' : 'btn-danger'}`;
+      addSysMsg(isOffline ? '⚠️ Offline mode active — actions queued in sync journal.' : '📶 Reconnected — click Sync Δ to merge queued operations.');
+      addLog(isOffline ? 'Link dropped. Sync Journal active.' : 'Link established. Ready for delta merge.', isOffline ? 'warn' : 'ok');
+    }
+
+    function syncDelta() {
+      if (isOffline) { alert('Cannot sync while offline. Go online first.'); return; }
+      if (journalOps.length === 0) { alert('Sync journal is empty.'); return; }
+      addLog(`Flushing ${journalOps.length} ops via POST /api/sync/delta…`, 'sys');
+      setTimeout(() => {
+        addLog('LWW conflict strategy resolved. Server ack received.', 'ok');
+        alert(`✅ Synced ${journalOps.length} operation(s) successfully!`);
+        journalOps = [];
+        updateJournal();
+      }, 900);
+    }
+
+    function updateJournal() {
+      const el = document.getElementById('journal-list');
+      document.getElementById('journal-count').textContent = journalOps.length;
+      if (journalOps.length === 0) {
+        el.innerHTML = '<div class="journal-empty">Journal empty. Go offline to queue actions.</div>';
+        return;
+      }
+      el.innerHTML = '';
+      journalOps.forEach(op => {
+        const d = document.createElement('div');
+        d.className = 'journal-entry';
+        d.innerHTML = `<span><strong>${op.type}</strong> · ${op.table}</span><span style="color:var(--text-muted);">#${op.id}</span>`;
+        el.appendChild(d);
+      });
+    }
+
+    // ── Streak ──
+    function breakStreak() {
+      document.getElementById('streak-toast').classList.remove('hidden');
+      addLog('Streak broken — grace cushion prompt shown', 'warn');
+    }
+    function repairStreak() {
+      document.getElementById('streak-toast').classList.add('hidden');
+      streakDays = 7;
+      document.getElementById('streak-count').textContent = streakDays;
+      addLog('Grace cushion used — streak restored ✓', 'ok');
+      alert('❄️ Grace Cushion used! Streak restored to 7 days.');
+    }
+
+    // ── SRE ──
+    function crashDB() {
+      isDbCrashed = true;
+      document.getElementById('m-status').textContent = '503 Unhealthy';
+      document.getElementById('m-status').className = 'tb-value text-danger';
+      document.getElementById('m-db').textContent = '0 / 10';
+      document.getElementById('m-lat').textContent = '---';
+      addLog('CRITICAL: DB pool crashed. /api/health returns 503', 'warn');
+    }
+
+    function spikeMemory() {
+      isMemorySpiked = true;
+      document.getElementById('m-mem').textContent = '97.6% (501 MB)';
+      document.getElementById('m-lat').textContent = '420 ms';
+      addLog('Memory spike 97.6% — heavy event loops registered', 'warn');
+    }
+
+    function restoreSystem() {
+      isDbCrashed = isMemorySpiked = false;
+      document.getElementById('m-status').textContent = '200 OK';
+      document.getElementById('m-status').className = 'tb-value text-success';
+      document.getElementById('m-db').textContent = '10 / 10';
+      document.getElementById('m-mem').textContent = '34.2% (180 MB)';
+      document.getElementById('m-lat').textContent = '14 ms';
+      addLog('System fully restored — all services healthy ✓', 'ok');
+    }
+
+    function openHealthModal()  { document.getElementById('health-modal').classList.remove('hidden'); }
+    function closeHealthModal() { document.getElementById('health-modal').classList.add('hidden'); }
+
+    // ── Logger ──
+    function addLog(msg, type) {
+      const el = document.getElementById('sanitizer-log');
+      const d = document.createElement('div');
+      d.className = type === 'warn' ? 'log-entry-warn' : type === 'ok' ? 'log-entry-ok' : 'log-entry-sys';
+      d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      if (el) {
+        el.appendChild(d);
+        el.scrollTop = el.scrollHeight;
+      }
+    }
+  </script>
+
+</body>
+</html>

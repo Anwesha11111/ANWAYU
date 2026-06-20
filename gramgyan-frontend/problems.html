@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Public Challenges & Projects</title>
+  <meta name="description" content="A public LeetCode-style challenge board where rural students solve DSA problems and real-world projects, verified by companies.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .main-scroll { overflow-y: auto; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+    .challenge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    .challenge-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: var(--transition); }
+    .challenge-card:hover { border-color: var(--accent-company); transform: translateY(-2px); }
+    .difficulty { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+    .difficulty.easy { background: rgba(74,222,128,0.12); color: var(--color-success); }
+    .difficulty.medium { background: rgba(251,191,36,0.12); color: var(--color-warning); }
+    .difficulty.hard { background: rgba(248,113,113,0.12); color: var(--color-danger); }
+    .submission-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; }
+    body {
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(251,146,60,0.08) 0%, transparent 60%);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link">🎒 Student</a>
+      <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link">🏢 Company</a>
+      <a href="ngo.html" class="nav-link">🤝 NGO</a>
+      <a href="problems.html" class="nav-link active-c">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills Directory</a>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <a href="skills.html" class="btn btn-ghost btn-sm">View Student Skills</a>
+    </div>
+  </nav>
+
+  <div class="app-layout" style="grid-template-columns: 280px 1fr;">
+    <!-- LEFT SIDEBAR: post challenge -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h4>🏢 Company Tools</h4>
+        <div class="card" style="padding: 16px;">
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;">Add a new DSA problem or practical project challenge for students.</p>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Title</label>
+            <input class="form-input" id="new-title" placeholder="e.g. Reverse a Linked List">
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Type</label>
+            <select class="form-select" id="new-type">
+              <option value="DSA">DSA Coding Problem</option>
+              <option value="Project">Practical Project</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Difficulty</label>
+            <select class="form-select" id="new-diff">
+              <option value="Easy">Easy</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>Description / Description Link</label>
+            <textarea class="form-textarea" id="new-desc" rows="3" placeholder="Problem statements, constraints, and test cases..."></textarea>
+          </div>
+          <button class="btn btn-orange w-full btn-sm" onclick="postChallenge()">Publish Challenge</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>📢 How it works</h4>
+        <p style="font-size:0.75rem;color:var(--text-muted);line-height:1.4;">
+          1. Companies post DSA problems or projects.<br>
+          2. Students write and submit solutions.<br>
+          3. Verified completions automatically propagate to the student's public <strong>Skills Profile</strong>.<br>
+          4. Companies review submissions and can unlock contact details directly from here.
+        </p>
+      </div>
+    </aside>
+
+    <!-- MAIN BOARD -->
+    <main class="main-scroll">
+      <div>
+        <h1 style="font-weight:900;font-size:1.8rem;color:var(--accent-company);">DSA & Project Challenge Board</h1>
+        <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:4px;">Solve code challenges and work on industry-sponsored projects to upgrade your public profile.</p>
+      </div>
+
+      <!-- CHALLENGES GRID -->
+      <section>
+        <h2 class="section-title">Active Challenges</h2>
+        <div class="challenge-grid" id="challenges-container">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- PUBLIC SUBMISSIONS -->
+      <section class="card">
+        <h2 class="section-title" style="margin-bottom:12px;">🏆 Recent Student Submissions & Peer Reviews</h2>
+        <div id="submissions-container">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SOLVE MODAL -->
+  <div class="modal-backdrop hidden" id="solve-modal">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="modal-title">Solve Challenge</h2>
+        <button class="modal-close" onclick="closeSolveModal()">✕</button>
+      </div>
+      <div style="padding: 16px; display:flex; flex-direction:column; gap:12px;">
+        <p id="modal-desc" style="font-size:0.85rem;color:var(--text-secondary);"></p>
+        <div class="form-group">
+          <label>Your Solution Code / Project Submission Link</label>
+          <textarea class="form-textarea" id="solution-input" rows="6" style="font-family:var(--font-mono);font-size:0.82rem;" placeholder="Write your function code here (e.g. in JavaScript or Python)..."></textarea>
+        </div>
+        <button class="btn btn-green w-full" onclick="submitSolution()">Submit Verification Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL -->
+  <div class="modal-backdrop hidden" id="review-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Review Student Submission</h2>
+        <button class="modal-close" onclick="closeReviewModal()">✕</button>
+      </div>
+      <div style="padding: 16px; display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <strong id="review-student">Student Name</strong>
+          <div id="review-challenge" style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Challenge Title</div>
+        </div>
+        <div class="form-group">
+          <label>Submitted Code</label>
+          <pre id="review-code" style="background:var(--bg-input);padding:10px;border-radius:6px;font-family:var(--font-mono);font-size:0.8rem;overflow-x:auto;"></pre>
+        </div>
+        <div class="form-group">
+          <label>Review Score & Feedback</label>
+          <select class="form-select" id="review-rating">
+            <option value="5">⭐⭐⭐⭐⭐ Excellent (5/5)</option>
+            <option value="4">⭐⭐⭐⭐ Approved (4/5)</option>
+            <option value="3">⭐⭐⭐ Needs Work (3/5)</option>
+          </select>
+          <textarea class="form-textarea" id="review-comment" rows="2" style="margin-top:8px;" placeholder="Add feedback notes..."></textarea>
+        </div>
+        <button class="btn btn-orange w-full" onclick="submitReview()">Save Review & Approve</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initial Challenges Data
+    const challenges = [
+      { id: 1, title: "Two Sum", type: "DSA", diff: "Easy", desc: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.", company: "Google India" },
+      { id: 2, title: "Reverse Linked List", type: "DSA", diff: "Easy", desc: "Given the head of a singly linked list, reverse the list, and return the reversed list.", company: "Microsoft" },
+      { id: 3, title: "Binary Search", type: "DSA", diff: "Easy", desc: "Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums.", company: "GramGyan Core" },
+      { id: 4, title: "Drip Irrigation Layout Design", type: "Project", diff: "Medium", desc: "Draft a system design for a 1-acre organic farm incorporating rainwater harvesting parameters.", company: "Tata Projects" },
+      { id: 5, title: "Solar Inverter Diagnostic Logger", type: "Project", diff: "Hard", desc: "Build a lightweight micro-service script to query solar inverter logs and output daily sync payload status.", company: "Solar India Foundation" }
+    ];
+
+    // Initial Submissions
+    const submissions = [
+      { id: 101, student: "Ravi Sharma", challenge: "Two Sum", diff: "Easy", code: "def twoSum(nums, target):\n    d = {}\n    for i, n in enumerate(nums):\n        diff = target - n\n        if diff in d: return [d[diff], i]\n        d[n] = i", status: "Verified", reviewer: "Tata Projects", comment: "Excellent logic, fully optimized O(N)." },
+      { id: 102, student: "Priya Patel", challenge: "Reverse Linked List", diff: "Easy", code: "ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while(curr) {\n        ListNode* next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;\n}", status: "Verified", reviewer: "Google India", comment: "Standard clean pointer reversal implementation." }
+    ];
+
+    let currentChallengeId = null;
+    let currentSubmissionIndex = null;
+
+    function renderChallenges() {
+      const container = document.getElementById('challenges-container');
+      container.innerHTML = '';
+      challenges.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'challenge-card';
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <span class="badge badge-orange">${c.type}</span>
+            <span class="difficulty ${c.diff.toLowerCase()}">${c.diff}</span>
+          </div>
+          <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:6px;">${c.title}</h3>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.4;">${c.desc}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--text-muted);">
+            <span>Sponsored: <strong>${c.company}</strong></span>
+            <button class="btn btn-ghost btn-xs" onclick="openSolveModal(${c.id})">Solve →</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderSubmissions() {
+      const container = document.getElementById('submissions-container');
+      container.innerHTML = '';
+      submissions.forEach((s, idx) => {
+        const div = document.createElement('div');
+        div.className = 'submission-row';
+        div.innerHTML = `
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <strong style="color:var(--text-primary); font-size:0.9rem;">${s.student}</strong>
+              <span class="badge badge-cyan">${s.challenge}</span>
+              <span class="hash-badge" style="font-size:0.65rem;">Approved by ${s.reviewer}</span>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">
+              Feedback: "${s.comment}"
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-xs" onclick="openReviewModal(${idx})">Review & Modify</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openSolveModal(id) {
+      const challenge = challenges.find(c => c.id === id);
+      currentChallengeId = id;
+      document.getElementById('modal-title').textContent = `Solve: ${challenge.title}`;
+      document.getElementById('modal-desc').textContent = challenge.desc;
+      document.getElementById('solution-input').value = '';
+      document.getElementById('solve-modal').classList.remove('hidden');
+    }
+
+    function closeSolveModal() {
+      document.getElementById('solve-modal').classList.add('hidden');
+    }
+
+    function submitSolution() {
+      const code = document.getElementById('solution-input').value.trim();
+      if(!code) {
+        alert('Please enter your solution code.');
+        return;
+      }
+      const challenge = challenges.find(c => c.id === currentChallengeId);
+      
+      // Add submission
+      const newSub = {
+        id: Math.floor(100 + Math.random() * 900),
+        student: "Ravi Sharma",
+        challenge: challenge.title,
+        diff: challenge.diff,
+        code: code,
+        status: "Verified",
+        reviewer: challenge.company,
+        comment: "Pending manual audit. Automated tests passed successfully."
+      };
+      
+      submissions.unshift(newSub);
+      renderSubmissions();
+      closeSolveModal();
+
+      // Automatically sync learned skills with local storage or state to propagate to skills.html
+      let completedChallenges = JSON.parse(localStorage.getItem('completedChallenges') || '[]');
+      completedChallenges.push({ title: challenge.title, diff: challenge.diff, company: challenge.company });
+      localStorage.setItem('completedChallenges', JSON.stringify(completedChallenges));
+
+      alert('🚀 Solution submitted! Automatically integrated into your public Skills Page.');
+    }
+
+    function openReviewModal(idx) {
+      currentSubmissionIndex = idx;
+      const sub = submissions[idx];
+      document.getElementById('review-student').textContent = sub.student;
+      document.getElementById('review-challenge').textContent = `Challenge: ${sub.challenge} (${sub.diff})`;
+      document.getElementById('review-code').textContent = sub.code;
+      document.getElementById('review-comment').value = sub.comment;
+      document.getElementById('review-modal').classList.remove('hidden');
+    }
+
+    function closeReviewModal() {
+      document.getElementById('review-modal').classList.add('hidden');
+    }
+
+    function submitReview() {
+      const rating = document.getElementById('review-rating').value;
+      const comment = document.getElementById('review-comment').value.trim();
+      
+      if(currentSubmissionIndex !== null) {
+        submissions[currentSubmissionIndex].comment = comment || `Reviewed with rating: ${rating} stars.`;
+        renderSubmissions();
+      }
+      closeReviewModal();
+      alert('✅ Review and evaluation feedback recorded.');
+    }
+
+    function postChallenge() {
+      const title = document.getElementById('new-title').value.trim();
+      const type = document.getElementById('new-type').value;
+      const diff = document.getElementById('new-diff').value;
+      const desc = document.getElementById('new-desc').value.trim();
+
+      if(!title || !desc) {
+        alert('Please fill out challenge Title and Description.');
+        return;
+      }
+
+      challenges.unshift({
+        id: challenges.length + 1,
+        title,
+        type,
+        diff,
+        desc,
+        company: "Tata Projects (Verify Engine)"
+      });
+
+      renderChallenges();
+
+      document.getElementById('new-title').value = '';
+      document.getElementById('new-desc').value = '';
+      alert('🚀 Challenge published successfully! Placed in the public LeetCode registry.');
+    }
+
+    // Initial load
+    renderChallenges();
+    renderSubmissions();
+  </script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — NGO Operations & Hub Monitor</title>
+  <meta name="description" content="Monitor solar-powered village learning hubs, distribute streak grace cushions, and manage local node hardware and SRE health.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .main-scroll { overflow-y: auto; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .hub-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 18px; position: relative; transition: var(--transition); }
+    .hub-card:hover { border-color: var(--accent-ngo); }
+    .hub-status { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; margin-bottom: 12px; }
+    .battery-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+    .battery-fill { height: 100%; border-radius: 3px; }
+    .cushion-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: var(--transition); }
+    .cushion-card:hover { border-color: var(--border-strong); }
+    body { background-image: radial-gradient(ellipse at 20% 0%, rgba(74,222,128,0.15) 0%, transparent 60%); }
+    .sidebar.collapsed { display: none !important; }
+    .app-layout { transition: var(--transition); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link">🎒 Student</a>
+      <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link">🏢 Company</a>
+      <a href="ngo.html" class="nav-link active-n">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills</a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar()">📐 Toggle Profile</button>
+      <span class="badge badge-green">Bharat Rural Trust · NGO Super Admin</span>
+      <span class="dot green"></span>
+    </div>
+  </nav>
+
+  <div class="app-layout" id="ngo-layout" style="grid-template-columns:280px 1fr;">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h4>🤝 Operator Info</h4>
+        <div class="profile-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="profile-avatar" style="background:linear-gradient(135deg,#4ade80,#16a34a);">BR</div>
+            <div>
+              <div class="profile-name">Bharat Rural Trust</div>
+              <div class="profile-meta">Central Ops Control</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Active Hubs</span>
+            <strong>42 Hubs</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Total Devices</span>
+            <strong>120 Tablets</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+            <span style="color:var(--text-muted);">Sync Protocol</span>
+            <span class="badge badge-green">Redis CRDT</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>⚡ Quick Actions</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-green btn-sm w-full" onclick="approveAllCushions()">🔥 Approve All Grace Cushions</button>
+          <button class="btn btn-ghost btn-sm w-full" onclick="alert('Broadcasting telemetry sync request to all offline nodes...')">📡 Telemetry Ping</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>🚨 Active Alerts</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:10px;font-size:0.78rem;">
+            <strong style="color:var(--color-danger);">⚠️ Node Offline</strong><br>
+            <span style="color:var(--text-muted);">Nagpur East Hub missed sync window by 4 hours. Low Battery.</span>
+          </div>
+          <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:10px;font-size:0.78rem;">
+            <strong style="color:var(--color-warning);">⚡ Solar Charge Low</strong><br>
+            <span style="color:var(--text-muted);">Alwar North Hub battery dropped below 30% due to dust storm.</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN SCROLLABLE -->
+    <main class="main-scroll">
+
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h1 style="font-size:1.8rem;font-weight:900;color:var(--accent-ngo);">NGO Operations</h1>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-top:4px;">Manage solar hubs, distribute grace cushions for outage resilience, and track device health.</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="alert('Exporting full SRE node logs and device state maps...')">⬇ Export Node Logs</button>
+          <button class="btn btn-green btn-sm" onclick="alert('Entering Diagnostic Mode. All node systems querying...')">🛠️ Run Diagnostics</button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Solar Hubs Active</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--accent-ngo);margin-top:4px;">42 / 43</div>
+          <div style="font-size:0.7rem;color:var(--color-warning);margin-top:4px;">● 1 Node Requires Attention</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Devices Active / Registered</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--text-primary);margin-top:4px;">112 / 120</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">In-use student study tablets</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Pending Grace Cushions</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--color-warning);margin-top:4px;" id="cushion-count">2 Requests</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">Requested due to village blackouts</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Solar Microgrid Generation</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--color-success);margin-top:4px;">4.8 kW</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">Average battery load 45% (optimal)</div>
+        </div>
+      </div>
+
+      <!-- Solar Hub SRE Monitor -->
+      <div class="card">
+        <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;">📡 Solar Hub SRE Health Monitor</h3>
+        <div class="hub-grid" id="hubs-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Streak Grace Cushions -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:800;">🔥 Streak Grace Cushions</h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;">Protect rural learners' streak rewards when local infrastructure fails.</p>
+          </div>
+          <span class="badge badge-yellow" id="cushion-badge">2 Pending</span>
+        </div>
+        <div id="cushion-list" style="display:flex;flex-direction:column;gap:12px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Device Inventory Ledger -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:1.1rem;font-weight:800;">📱 Tablet Inventory & Diagnostics</h3>
+          <button class="btn btn-ghost btn-xs" onclick="addMockDevice()">➕ Register New Device</button>
+        </div>
+        <table class="students-table" style="font-size:0.85rem;">
+          <thead>
+            <tr>
+              <th>Serial Number</th>
+              <th>Assigned Hub</th>
+              <th>Battery State</th>
+              <th>Offline Sync Queue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="device-tbody">
+            <tr>
+              <td><strong>GG-TAB-1002</strong></td>
+              <td>Alwar North Hub</td>
+              <td>🔋 94%</td>
+              <td>0 items (Synced)</td>
+              <td><span class="badge badge-green">ONLINE</span></td>
+            </tr>
+            <tr>
+              <td><strong>GG-TAB-1045</strong></td>
+              <td>Surendranagar Hub</td>
+              <td>🔋 81%</td>
+              <td>2 items (Queued)</td>
+              <td><span class="badge badge-green">ONLINE</span></td>
+            </tr>
+            <tr>
+              <td><strong>GG-TAB-1089</strong></td>
+              <td>Nagpur East Hub</td>
+              <td>🪫 12%</td>
+              <td>14 items (Stale)</td>
+              <td><span class="badge badge-red">DISCONNECTED</span></td>
+            </tr>
+            <tr>
+              <td><strong>GG-TAB-1102</strong></td>
+              <td>Khammam South Hub</td>
+              <td>🔋 99%</td>
+              <td>0 items (Synced)</td>
+              <td><span class="badge badge-green">ONLINE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Mock Hub Data
+    const hubs = [
+      { name: "Alwar North Hub", location: "Rajasthan", battery: 28, batteryColor: "var(--color-warning)", status: "ONLINE", statusDot: "yellow", net: "2G Syncing", signal: "📶 Strong 2G" },
+      { name: "Surendranagar Hub", location: "Gujarat", battery: 88, batteryColor: "var(--color-success)", status: "ONLINE", statusDot: "green", net: "3G Syncing", signal: "📶 Moderate 3G" },
+      { name: "Khammam South Hub", location: "Telangana", battery: 95, batteryColor: "var(--color-success)", status: "ONLINE", statusDot: "green", net: "4G Syncing", signal: "📶 Strong 4G" },
+      { name: "Nagpur East Hub", location: "Maharashtra", battery: 12, batteryColor: "var(--color-danger)", status: "OFFLINE", statusDot: "red", net: "No Connection", signal: "❌ No Signal" }
+    ];
+
+    // Mock Grace Cushion Requests
+    let cushions = [
+      { id: 1, student: "Amit Meena", hub: "Alwar North Hub", outage: "36 hrs Blackout", reason: "Dust storm damaged solar array. Node ran on battery only." },
+      { id: 2, student: "Manoj Yadav", hub: "Nagpur East Hub", outage: "48 hrs Grid Failure", reason: "Major monsoon-related regional power grid failure." }
+    ];
+
+    function renderHubs() {
+      const container = document.getElementById('hubs-container');
+      container.innerHTML = '';
+      hubs.forEach(h => {
+        const div = document.createElement('div');
+        div.className = 'hub-card';
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <strong style="font-size:1rem;color:var(--text-primary);">${h.name}</strong>
+            <span style="font-size:0.75rem;color:var(--text-muted);">${h.location}</span>
+          </div>
+          <div class="hub-status">
+            <span class="dot ${h.statusDot}"></span>
+            <span style="font-weight:700;">${h.status}</span>
+            <span style="color:var(--text-muted);">|</span>
+            <span style="font-size:0.75rem;color:var(--text-secondary);">${h.net}</span>
+          </div>
+          <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:4px;">
+            Solar Battery: <strong>${h.battery}%</strong>
+            <div class="battery-bar">
+              <div class="battery-fill" style="width:${h.battery}%;background:${h.batteryColor};"></div>
+            </div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;display:flex;justify-content:space-between;">
+            <span>Network: <strong>${h.signal}</strong></span>
+            <button class="btn btn-ghost btn-xs" style="padding:2px 6px;" onclick="syncHub('${h.name}')">Force Sync</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderCushions() {
+      const list = document.getElementById('cushion-list');
+      const badge = document.getElementById('cushion-badge');
+      const count = document.getElementById('cushion-count');
+      
+      badge.textContent = `${cushions.length} Pending`;
+      count.textContent = `${cushions.length} Requests`;
+      
+      list.innerHTML = '';
+      if (cushions.length === 0) {
+        list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">No pending grace cushion requests.</div>`;
+        return;
+      }
+      
+      cushions.forEach((c, idx) => {
+        const div = document.createElement('div');
+        div.className = 'cushion-card';
+        div.innerHTML = `
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+              <strong style="font-size:0.9rem;">${c.student}</strong>
+              <span class="badge badge-yellow">${c.hub}</span>
+              <span class="badge badge-red">${c.outage}</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);">${c.reason}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button class="btn btn-green btn-xs" onclick="approveCushion(${c.id})">Approve Cushion</button>
+            <button class="btn btn-ghost btn-xs" onclick="rejectCushion(${c.id})">Reject</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function approveCushion(id) {
+      cushions = cushions.filter(c => c.id !== id);
+      renderCushions();
+      alert('🔥 Grace cushion approved! Broadcasted streak restoration to client node sync journal.');
+    }
+
+    function rejectCushion(id) {
+      cushions = cushions.filter(c => c.id !== id);
+      renderCushions();
+      alert('Grace cushion rejected.');
+    }
+
+    function approveAllCushions() {
+      if(cushions.length === 0) {
+        alert('No pending requests.');
+        return;
+      }
+      cushions = [];
+      renderCushions();
+      alert('🔥 All grace cushions approved and sync messages placed in Redis CRDT outbound queue.');
+    }
+
+    function syncHub(name) {
+      alert(`Initiating force telemetry & state synchronization with "${name}"...\n\n(Full build sends UDP/CoAP beacon to node IP, pulls offline sync journal, merges local Git/Redis databases.)`);
+    }
+
+    function addMockDevice() {
+      const tbody = document.getElementById('device-tbody');
+      const tr = document.createElement('tr');
+      const randId = Math.floor(1000 + Math.random() * 9000);
+      tr.innerHTML = `
+        <td><strong>GG-TAB-${randId}</strong></td>
+        <td>Alwar North Hub</td>
+        <td>🔋 100%</td>
+        <td>0 items (Synced)</td>
+        <td><span class="badge badge-green">ONLINE</span></td>
+      `;
+      tbody.appendChild(tr);
+      alert('📱 Registered new study tablet GG-TAB-' + randId + ' under Alwar North Hub inventory registry.');
+    }
+
+    // Initial render
+    renderHubs();
+    renderCushions();
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const layout = document.getElementById('ngo-layout');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else {
+        layout.style.gridTemplateColumns = '280px 1fr';
+      }
+    }
+  </script>
+</body>
+</html>

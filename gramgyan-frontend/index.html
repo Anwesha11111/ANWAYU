@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Gatekeeper Console</title>
+  <meta name="description" content="Gatekeeper console access portal for Student, Teacher, Company, and NGO modules.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-container {
+      max-width: 480px;
+      margin: 80px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    body {
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.06) 0%, transparent 60%);
+    }
+    .gatekeeper-shield {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent-student), var(--accent-teacher));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 8px 32px rgba(34,211,238,0.3);
+      animation: pulse-glow 2s infinite alternate;
+    }
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 8px 32px rgba(34,211,238,0.2); }
+      100% { box-shadow: 0 8px 32px rgba(167,139,250,0.5); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav" style="justify-content: center;">
+    <div class="nav-logo">
+      <div class="nav-orb"></div>
+      GramGyan Gatekeeper Console
+    </div>
+  </nav>
+
+  <div class="login-container">
+    <div class="gatekeeper-shield">🛡️</div>
+    <h1 style="font-size: 2.2rem; font-weight: 900; line-height: 1.2; margin-bottom: 8px;">
+      Gatekeeper Secure Login
+    </h1>
+    <p style="color:var(--text-secondary); margin-bottom:28px; font-size:0.95rem;">Authenticate below to route your connection to the correct secure node.</p>
+
+    <!-- Gatekeeper Card -->
+    <div class="card" style="padding:32px; display:flex; flex-direction:column; gap:16px; text-align:left; border-color: rgba(34,211,238,0.25);">
+      <div class="form-group">
+        <label for="username-input">Security Identifier (Username)</label>
+        <input class="form-input" id="username-input" placeholder="e.g. student, teacher, company, ngo" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password-input">Verification Key (Password)</label>
+        <input type="password" class="form-input" id="password-input" placeholder="••••••••" required>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--text-secondary); background:rgba(255,255,255,0.02); padding:10px 14px; border-radius:8px; border:1px dashed var(--border);">
+        🔑 <strong>Access Directory Hints:</strong><br>
+        • Identifier <strong>student</strong> $\rightarrow$ student.html (Student Workspace)<br>
+        • Identifier <strong>teacher</strong> $\rightarrow$ teacher.html (Teacher Hub)<br>
+        • Identifier <strong>company</strong> $\rightarrow$ company.html (B2B Recruiter Portal)<br>
+        • Identifier <strong>ngo</strong> $\rightarrow$ ngo.html (Operations Control)
+      </div>
+
+      <button class="btn btn-cyan w-full" style="margin-top:10px; background: linear-gradient(135deg, var(--accent-student), var(--accent-teacher));" onclick="handleLogin()">
+        Decrypt & Enter Portal →
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="margin-top:80px;border-top:1px solid var(--border);padding:24px 40px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text-muted);">
+    <span>© 2026 GramGyan — Gatekeeper Auth Node</span>
+    <span>Verifiable Decryption Signature Engine · v1.4.0</span>
+  </footer>
+
+  <script>
+    function handleLogin() {
+      const user = document.getElementById('username-input').value.trim().toLowerCase();
+      const pass = document.getElementById('password-input').value;
+
+      if (!user || !pass) {
+        alert('Credentials required.');
+        return;
+      }
+
+      // Decryption Routing
+      if (user === 'student') {
+        window.location.href = 'student.html';
+      } else if (user === 'teacher') {
+        window.location.href = 'teacher.html';
+      } else if (user === 'company') {
+        window.location.href = 'company.html';
+      } else if (user === 'ngo') {
+        window.location.href = 'ngo.html';
+      } else {
+        alert('Unknown identity descriptor.');
+      }
+    }
+  </script>
+
+</body>
+</html>
