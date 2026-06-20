@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Company Talent Partner Hub</title>
+  <meta name="description" content="Access verified, tamper-proof competency portfolios of rural Indian learners. Post apprenticeships and recruit verified talent.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .main-scroll { overflow-y: auto; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+    .scam-log { background: rgba(248,113,113,0.04); border: 1px solid rgba(248,113,113,0.15); border-radius: 8px; padding: 8px 12px; font-family: var(--font-mono); font-size: 0.72rem; margin-bottom: 8px; }
+    .scam-log.good { background: rgba(74,222,128,0.04); border-color: rgba(74,222,128,0.15); }
+    .hash-badge { font-family: var(--font-mono); font-size: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
+    .talent-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: var(--transition); }
+    .talent-card:hover { border-color: var(--accent-company); transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link">🎒 Student</a>
+      <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link active-c">🏢 Company</a>
+      <a href="ngo.html" class="nav-link">🤝 NGO</a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="badge badge-orange">Tata Projects Ltd · KYB VERIFIED</span>
+      <span class="dot green"></span>
+    </div>
+  </nav>
+
+  <div class="app-layout" style="grid-template-columns:280px 1fr;">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h4>🏢 Company Profile</h4>
+        <div class="profile-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="profile-avatar" style="background:linear-gradient(135deg,#fb923c,#ea580c);">TP</div>
+            <div>
+              <div class="profile-name">Tata Projects Ltd</div>
+              <div class="profile-meta">Rural Infra & Skill Div.</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">KYB Status</span>
+            <span class="badge badge-green">VERIFIED</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Active Jobs</span>
+            <strong>3 Postings</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+            <span style="color:var(--text-muted);">HMAC Key</span>
+            <span class="hash-badge">ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>🛡️ AI Scam Shield</h4>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;">Real-time credential fraud & sybil attack prevention.</p>
+        <div id="scam-logs-container">
+          <div class="scam-log good">
+            <span style="color:var(--color-success);">[SECURE]</span> 10:14:02 candidate "Priya Patel" HMAC matches ledger.
+          </div>
+          <div class="scam-log">
+            <span style="color:var(--color-danger);">[BLOCKED]</span> 09:44:12 IP 203.0.113.8 attempted to write raw DB records. Rejected.
+          </div>
+          <div class="scam-log good">
+            <span style="color:var(--color-success);">[SHIELD]</span> 08:30:15 AI integrity scanner verified 12 new crop rotation models.
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>📊 Verification Metrics</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.8rem;">
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--text-muted);">Integrity Audits</span>
+            <strong>1,490 Passed</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--text-muted);">Sybil Protection</span>
+            <span class="badge badge-cyan">99.9% Shielded</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN SCROLLABLE -->
+    <main class="main-scroll">
+
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h1 style="font-size:1.8rem;font-weight:900;color:var(--accent-company);">Company Portal</h1>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-top:4px;">Recruit pre-screened rural learners with cryptographically secure, tamper-proof skill records.</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="alert('Downloading security logs and public verification keys...')">🛡️ Download Keys</button>
+          <a href="#post-job-form" class="btn btn-orange btn-sm">➕ Post Internship</a>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Total Candidates Verified</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--accent-company);margin-top:4px;">1,248</div>
+          <div style="font-size:0.7rem;color:var(--color-success);margin-top:4px;">● 42 Hubs Syncing Live</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Active Vacancies</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--text-primary);margin-top:4px;">3</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">Tata Projects, Rajasthan division</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">Applicants Under Review</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--color-warning);margin-top:4px;">14</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">Pre-verified competency checks</div>
+        </div>
+        <div class="card" style="padding:16px 20px;">
+          <div style="font-size:0.8rem;color:var(--text-muted);">HMAC Integrity Verification</div>
+          <div style="font-size:1.8rem;font-weight:800;color:var(--color-success);margin-top:4px;">100% SECURE</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">Tamper-proof backend hash ledger</div>
+        </div>
+      </div>
+
+      <!-- Candidate Talent Feed -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h3 style="font-size:1.1rem;font-weight:800;">🔍 Verified Rural Talent Pool</h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;">Filter verified candidates across different village hubs.</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select class="form-select" id="filter-skill" onchange="filterTalent()" style="width:160px;padding:6px 12px;font-size:0.8rem;">
+              <option value="all">All Skills</option>
+              <option value="organic">Organic Farming</option>
+              <option value="solar">Solar Maintenance</option>
+              <option value="drip">Drip Irrigation</option>
+              <option value="digital">Digital Literacy</option>
+            </select>
+            <input class="form-input" placeholder="Search by hub or language..." id="search-input" oninput="filterTalent()" style="width:200px;padding:6px 12px;font-size:0.8rem;">
+          </div>
+        </div>
+
+        <div id="talent-list" style="display:flex;flex-direction:column;gap:12px;">
+          <!-- Items will be populated by JS -->
+        </div>
+      </div>
+
+      <!-- Post a Job Form -->
+      <div class="card" id="post-job-form">
+        <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;">➕ Post a New Apprenticeship / Internship</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group">
+            <label>Job Title</label>
+            <input class="form-input" id="job-title" placeholder="e.g. Assistant Drip Irrigation Technician">
+          </div>
+          <div class="form-group">
+            <label>Competency Requirement</label>
+            <select class="form-select" id="job-competency">
+              <option value="organic">Organic Farming (Level 2+)</option>
+              <option value="solar">Solar Maintenance (Level 1+)</option>
+              <option value="drip">Drip Irrigation (Level 2+)</option>
+              <option value="digital">Digital Literacy (Level 3+)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group">
+            <label>Target Hub / Region</label>
+            <input class="form-input" id="job-location" placeholder="e.g. Alwar Hub, Rajasthan">
+          </div>
+          <div class="form-group">
+            <label>Monthly Stipend (₹)</label>
+            <input class="form-input" id="job-stipend" placeholder="e.g. ₹ 8,000 / month">
+          </div>
+          <div class="form-group">
+            <label>Primary Language</label>
+            <input class="form-input" id="job-lang" placeholder="e.g. Hindi & Rajasthani">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+          <label>Job Description & Responsibilities</label>
+          <textarea class="form-textarea" id="job-desc" rows="3" placeholder="Describe the apprentice responsibilities, daily hours, and transport support..."></textarea>
+        </div>
+        <button class="btn btn-orange w-full" onclick="postJob()">🚀 Publish to GramGyan Hub Network</button>
+      </div>
+
+      <!-- Current Job Postings -->
+      <div class="card">
+        <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;">💼 Active Postings & Applications</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;" id="active-jobs-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Mock Candidates Data
+    const talent = [
+      { name: "Ravi S.", age: 19, hub: "Alwar North Hub, RJ", skill: "organic", skillLabel: "Organic Farming", score: 85, lang: "Hindi", verifiedBy: "Alwar NGO Alliance", hash: "hmac-sha256:d83f4bca992f" },
+      { name: "Priya P.", age: 18, hub: "Surendranagar Hub, GJ", skill: "drip", skillLabel: "Drip Irrigation", score: 78, lang: "Gujarati, Hindi", verifiedBy: "Gujarat Rural Trust", hash: "hmac-sha256:e3b52f9c1188" },
+      { name: "Sunita D.", age: 20, hub: "Khammam South Hub, TS", skill: "solar", skillLabel: "Solar Maintenance", score: 91, lang: "Telugu", verifiedBy: "Solar India Foundation", hash: "hmac-sha256:7f6a2b8e390c" },
+      { name: "Amit M.", age: 18, hub: "Alwar North Hub, RJ", skill: "digital", skillLabel: "Digital Literacy", score: 72, lang: "Hindi", verifiedBy: "Alwar NGO Alliance", hash: "hmac-sha256:4a0c8d9e2b11" },
+      { name: "Deepa K.", age: 19, hub: "Nagpur East Hub, MH", skill: "organic", skillLabel: "Organic Farming", score: 74, lang: "Marathi", verifiedBy: "Vidarbha Farmer Hub", hash: "hmac-sha256:1f92e8c3b7a5" }
+    ];
+
+    // Mock Active Jobs
+    const jobs = [
+      { title: "Junior Irrigation Apprentice", competency: "Drip Irrigation", location: "Alwar Hub, Rajasthan", stipend: "₹ 8,500/mo", lang: "Hindi", applicants: 4 },
+      { title: "Solar Maintenance Assistant", competency: "Solar Maintenance", location: "Surendranagar Hub, Gujarat", stipend: "₹ 9,000/mo", lang: "Gujarati", applicants: 6 },
+      { title: "Organic Farm Field Lead", competency: "Organic Farming", location: "Khammam Hub, Telangana", stipend: "₹ 10,000/mo", lang: "Telugu", applicants: 4 }
+    ];
+
+    function renderTalent(list) {
+      const container = document.getElementById('talent-list');
+      container.innerHTML = '';
+      if(list.length === 0) {
+        container.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-muted);">No candidates match the filter parameters.</div>`;
+        return;
+      }
+      list.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'talent-card';
+        div.innerHTML = `
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <strong style="font-size:1.05rem;color:var(--text-primary);">${t.name} (${t.age} yrs)</strong>
+              <span class="badge badge-orange">${t.skillLabel}</span>
+              <span class="hash-badge">${t.hash}</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);display:flex;gap:16px;">
+              <span>📍 Hub: <strong>${t.hub}</strong></span>
+              <span>🗣️ Languages: <strong>${t.lang}</strong></span>
+              <span>Verified by: <strong style="color:var(--color-success);">${t.verifiedBy}</strong></span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:20px;flex-shrink:0;">
+            <div style="text-align:right;">
+              <span style="font-size:0.75rem;color:var(--text-muted);">Competency Score</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="progress-wrap" style="width:70px;background:rgba(255,255,255,0.05);height:6px;border-radius:3px;"><div class="progress-fill" style="width:${t.score}%;background:var(--accent-company);height:6px;border-radius:3px;"></div></div>
+                <strong style="color:var(--accent-company);font-size:0.95rem;">${t.score}%</strong>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-xs" onclick="unlockCandidate('${t.name}')">Unlock Contact →</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterTalent() {
+      const skillVal = document.getElementById('filter-skill').value;
+      const searchVal = document.getElementById('search-input').value.toLowerCase();
+      
+      const filtered = talent.filter(t => {
+        const matchesSkill = skillVal === 'all' || t.skill === skillVal;
+        const matchesSearch = t.hub.toLowerCase().includes(searchVal) || t.lang.toLowerCase().includes(searchVal);
+        return matchesSkill && matchesSearch;
+      });
+      renderTalent(filtered);
+    }
+
+    function renderJobs() {
+      const container = document.getElementById('active-jobs-list');
+      container.innerHTML = '';
+      jobs.forEach((j, i) => {
+        const div = document.createElement('div');
+        div.className = 'talent-card';
+        div.style.background = 'rgba(255,255,255,0.02)';
+        div.innerHTML = `
+          <div style="flex:1;">
+            <h4 style="margin-bottom:4px;font-size:0.95rem;font-weight:700;">${j.title}</h4>
+            <div style="font-size:0.78rem;color:var(--text-secondary);display:flex;gap:16px;">
+              <span>📍 Hub: <strong>${j.location}</strong></span>
+              <span>💰 Stipend: <strong>${j.stipend}</strong></span>
+              <span>🔑 Target Skill: <strong>${j.competency}</strong></span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="badge badge-orange">${j.applicants} Applicants</span>
+            <button class="btn btn-ghost btn-xs" onclick="alert('Viewing applications for ${j.title}')">View Apps</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function unlockCandidate(name) {
+      alert(`🔑 Cryptographic Unlock Request Initiated\n\nRecipient: ${name}\n\nUnder compliance rules:\n• A match notification is dispatched to candidate's registered shared-phone via SMS.\n• Verification hash is matched with local node.\n• Candidate consent is requested prior to sharing contact detail.`);
+    }
+
+    function postJob() {
+      const title = document.getElementById('job-title').value.trim();
+      const location = document.getElementById('job-location').value.trim();
+      const stipend = document.getElementById('job-stipend').value.trim();
+      const lang = document.getElementById('job-lang').value.trim();
+      const compSelect = document.getElementById('job-competency');
+      const compText = compSelect.options[compSelect.selectedIndex].text;
+      
+      if(!title || !location || !stipend) {
+        alert('Please fill out Title, Location, and Stipend fields.');
+        return;
+      }
+
+      jobs.unshift({
+        title,
+        competency: compText,
+        location,
+        stipend,
+        lang,
+        applicants: 0
+      });
+
+      renderJobs();
+
+      // Reset form
+      document.getElementById('job-title').value = '';
+      document.getElementById('job-location').value = '';
+      document.getElementById('job-stipend').value = '';
+      document.getElementById('job-lang').value = '';
+      document.getElementById('job-desc').value = '';
+
+      alert('🚀 Job published successfully! Propagating sync journals to regional village hub databases over 2G protocols.');
+    }
+
+    // Initial render
+    renderTalent(talent);
+    renderJobs();
+  </script>
+</body>
+</html>

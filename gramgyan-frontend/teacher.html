@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Teacher Hub</title>
+  <meta name="description" content="AI-powered teacher dashboard — generate lesson plans, track student progress, manage doubt queues.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .main-scroll { overflow-y: auto; padding: 28px; display: flex; flex-direction: column; gap: 24px; }
+    .doubt-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: var(--transition); }
+    .doubt-card:hover { border-color: var(--border-strong); }
+    .doubt-tag { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+    .doubt-tag.pending { background: rgba(251,191,36,0.12); color: var(--color-warning); }
+    .doubt-tag.resolved { background: rgba(74,222,128,0.12); color: var(--color-success); }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link">🎒 Student</a>
+      <a href="teacher.html" class="nav-link active-t">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link">🏢 Company</a>
+      <a href="ngo.html" class="nav-link">🤝 NGO</a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="badge badge-violet">Mrs. Anjali Desai · Mentor</span>
+      <span class="dot green"></span>
+    </div>
+  </nav>
+
+  <div class="app-layout" style="grid-template-columns:260px 1fr;">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-section">
+        <h4>👩‍🏫 Teacher Profile</h4>
+        <div class="profile-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="profile-avatar" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);">A</div>
+            <div>
+              <div class="profile-name">Anjali Desai</div>
+              <div class="profile-meta">Science & Agriculture · Alwar Hub</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Active Students</span>
+            <strong>24</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;">
+            <span style="color:var(--text-muted);">Doubt Queue</span>
+            <span class="badge badge-yellow" id="doubt-count">3 Pending</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+            <span style="color:var(--text-muted);">Hub</span>
+            <strong>Alwar North, Rajasthan</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>📊 Quick Stats</h4>
+        <div class="stat-row" style="flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;">
+            <span style="color:var(--text-muted);">Avg Streak</span>
+            <span style="font-weight:800;color:var(--color-warning);">🔥 6.2 days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;">
+            <span style="color:var(--text-muted);">Avg Competency</span>
+            <span style="font-weight:800;color:var(--accent-teacher);">68%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;">
+            <span style="color:var(--text-muted);">On 2G/Offline</span>
+            <span style="font-weight:800;color:var(--color-danger);">4 students</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;">
+            <span style="color:var(--text-muted);">Under Review</span>
+            <span style="font-weight:800;color:var(--color-warning);">2 submissions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h4>🔔 Notifications</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:10px;font-size:0.78rem;">
+            <strong style="color:var(--color-warning);">⚠️ Streak Alert</strong><br>
+            <span style="color:var(--text-muted);">Amit Meena — offline for 2 days. Grace cushion recommended.</span>
+          </div>
+          <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:10px;font-size:0.78rem;">
+            <strong style="color:var(--color-success);">✅ Verified</strong><br>
+            <span style="color:var(--text-muted);">Priya Patel — Organic Farming module passed (85%).</span>
+          </div>
+          <div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:10px;font-size:0.78rem;">
+            <strong style="color:var(--color-danger);">🚩 Review</strong><br>
+            <span style="color:var(--text-muted);">Submission flagged — unusually fast (1.2s). Under integrity review.</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-scroll">
+
+      <!-- Page Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h1 style="font-size:1.8rem;font-weight:900;">Teacher Hub</h1>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-top:4px;">AI lesson planning, student monitoring, and cohort management</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="exportReport()">⬇ Export Report</button>
+          <button class="btn btn-violet btn-sm" onclick="sendAnnouncement()">📢 Announce</button>
+        </div>
+      </div>
+
+      <!-- AI Lesson Generator -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div>
+            <h3 style="font-size:1rem;font-weight:800;">📝 AI Lesson Plan Generator</h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;">Powered by Nemotron Ultra 550B · localised for rural India</p>
+          </div>
+          <span class="badge badge-violet">Project Guidance Mode</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 180px 160px;gap:12px;margin-bottom:12px;">
+          <div class="form-group">
+            <label>Lesson Topic</label>
+            <input class="form-input" id="lesson-topic" placeholder="e.g. Rainwater harvesting in arid regions" value="Traditional rainwater harvesting in Rajasthan">
+          </div>
+          <div class="form-group">
+            <label>Class Level</label>
+            <select class="form-select" id="lesson-grade">
+              <option>Class 8 (Intro)</option>
+              <option selected>Class 10 (Mid)</option>
+              <option>Class 12 (Advanced)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Language</label>
+            <select class="form-select" id="lesson-lang">
+              <option value="en" selected>English</option>
+              <option value="hi">Hindi</option>
+              <option value="mr">Marathi</option>
+              <option value="te">Telugu</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-violet w-full" id="gen-btn" onclick="generateLesson()">✨ Generate Lesson Plan</button>
+
+        <!-- Output -->
+        <div id="lesson-output-wrap" class="hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;">
+            <span style="font-size:0.78rem;font-weight:700;color:var(--accent-teacher);">Generated Structure</span>
+            <span id="lesson-tele" style="font-size:0.72rem;font-family:var(--font-mono);color:var(--text-muted);"></span>
+          </div>
+          <div class="lesson-output" id="lesson-output"></div>
+        </div>
+      </div>
+
+      <!-- Student Competency Table -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:1rem;font-weight:800;">📊 Student Competency Tracker</h3>
+          <div style="display:flex;gap:8px;">
+            <input class="form-input" style="width:200px;padding:6px 12px;font-size:0.8rem;" placeholder="Search students…" oninput="filterStudents(this.value)" id="student-search">
+          </div>
+        </div>
+        <table class="students-table" id="students-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Streak</th>
+              <th>Top Module</th>
+              <th>Score</th>
+              <th>Network</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Doubt Queue -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:1rem;font-weight:800;">❓ Doubt Queue</h3>
+          <span class="badge badge-yellow" id="doubt-count-2">3 Pending</span>
+        </div>
+        <div id="doubt-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ── Students Data ──
+    const students = [
+      { name:'Ravi Sharma', streak:12, module:'Organic Farming', score:85, net:'WiFi', status:'verified' },
+      { name:'Priya Patel', streak:5,  module:'Drip Irrigation', score:78, net:'4G',   status:'verified' },
+      { name:'Amit Meena',  streak:1,  module:'Basic Math',      score:42, net:'Offline', status:'review' },
+      { name:'Sunita Devi', streak:9,  module:'Water Mgmt.',     score:91, net:'3G',   status:'verified' },
+      { name:'Lakshman S.', streak:3,  module:'Crop Rotation',   score:61, net:'2G',   status:'pending' },
+      { name:'Deepa Kumari',streak:7,  module:'Digital Literacy',score:74, net:'WiFi', status:'verified' },
+      { name:'Manoj Yadav', streak:0,  module:'—',               score:0,  net:'Offline', status:'offline' },
+    ];
+
+    const statusBadge = {
+      verified: '<span class="badge badge-green">✅ Verified</span>',
+      review:   '<span class="badge badge-yellow">⏳ Review</span>',
+      pending:  '<span class="badge badge-cyan">In Progress</span>',
+      offline:  '<span class="badge badge-red">Offline</span>',
+    };
+    const netBadge = {
+      WiFi: '<span class="badge badge-green">WiFi</span>',
+      '4G': '<span class="badge badge-cyan">4G</span>',
+      '3G': '<span class="badge badge-yellow">3G</span>',
+      '2G': '<span class="badge badge-orange">2G</span>',
+      Offline: '<span class="badge badge-red">Offline</span>',
+    };
+
+    function renderStudents(list) {
+      const tbody = document.getElementById('students-tbody');
+      tbody.innerHTML = '';
+      list.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${s.name}</strong></td>
+          <td>${s.streak > 0 ? `🔥 ${s.streak}d` : '—'}</td>
+          <td>${s.module}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="progress-wrap" style="width:80px;"><div class="progress-fill" style="width:${s.score}%"></div></div>
+              <span style="font-weight:700;">${s.score}%</span>
+            </div>
+          </td>
+          <td>${netBadge[s.net] || s.net}</td>
+          <td>${statusBadge[s.status]}</td>
+          <td><button class="btn btn-ghost btn-xs" onclick="viewStudent('${s.name}')">View →</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterStudents(q) {
+      const filtered = students.filter(s => s.name.toLowerCase().includes(q.toLowerCase()));
+      renderStudents(filtered);
+    }
+
+    function viewStudent(name) {
+      alert(`Viewing competency profile for ${name}.\n\nIn the full build, this will show:\n• Module-by-module scores\n• HMAC verification hashes\n• Submission timestamps\n• Sync history`);
+    }
+
+    renderStudents(students);
+
+    // ── Doubt Queue ──
+    const doubts = [
+      { student:'Ravi Sharma',    q:'How does photosynthesis work differently in drought conditions?', time:'2h ago', resolved:false },
+      { student:'Priya Patel',    q:'Can you explain the nitrogen cycle in farming?',                  time:'4h ago', resolved:false },
+      { student:'Lakshman Singh', q:'What is the difference between kharif and rabi crops?',          time:'1d ago', resolved:false },
+      { student:'Sunita Devi',    q:'How to calculate soil moisture content at home?',                 time:'1d ago', resolved:true  },
+    ];
+
+    function renderDoubts() {
+      const dl = document.getElementById('doubt-list');
+      const pending = doubts.filter(d => !d.resolved);
+      document.getElementById('doubt-count').textContent = `${pending.length} Pending`;
+      document.getElementById('doubt-count-2').textContent = `${pending.length} Pending`;
+      dl.innerHTML = '';
+      doubts.forEach((d, i) => {
+        const el = document.createElement('div');
+        el.className = 'doubt-card';
+        el.innerHTML = `
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <strong style="font-size:0.85rem;">${d.student}</strong>
+              <span class="doubt-tag ${d.resolved ? 'resolved' : 'pending'}">${d.resolved ? '✅ Resolved' : '⏳ Pending'}</span>
+              <span style="font-size:0.72rem;color:var(--text-muted);">${d.time}</span>
+            </div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);">${d.q}</div>
+          </div>
+          ${!d.resolved ? `<div style="display:flex;gap:6px;flex-shrink:0;">
+            <button class="btn btn-violet btn-xs" onclick="answerDoubt(${i})">Answer with AI</button>
+            <button class="btn btn-ghost btn-xs" onclick="resolveDoubt(${i})">Mark Resolved</button>
+          </div>` : ''}
+        `;
+        dl.appendChild(el);
+      });
+    }
+
+    function resolveDoubt(i) {
+      doubts[i].resolved = true;
+      renderDoubts();
+    }
+
+    function answerDoubt(i) {
+      alert(`AI Answer for: "${doubts[i].q}"\n\n(In full build, this streams a Nemotron-generated answer into a reply box for teacher review before sending to student.)`);
+      setTimeout(() => resolveDoubt(i), 500);
+    }
+
+    renderDoubts();
+
+    // ── Lesson Generator ──
+    const lessonMock = `📚 LESSON PLAN — Class 10 Science
+Topic: Traditional Rainwater Harvesting in Rajasthan
+Duration: 45 minutes | Language: English
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 LEARNING OBJECTIVES
+1. Understand the principles of rainwater harvesting
+2. Identify traditional structures used in Rajasthan (Baoris, Johads, Kunds)
+3. Calculate storage capacity of a simple Kund structure
+4. Relate water scarcity challenges to local student environment
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📖 INTRODUCTION (8 min)
+• Begin with a question: "How did villages survive drought before modern pipes?"
+• Show illustration of a Baori (stepwell) — connect to local geography
+• Brief history: Rajasthan has 500+ year old water systems built by communities
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔬 CORE CONCEPTS (20 min)
+1. Catchment area — rooftop / surface runoff collection
+2. Filtration — sand, gravel, charcoal layers
+3. Storage — underground Kunds to prevent evaporation
+4. Recharge — replenishing the water table for wells
+
+Local Example: The Anasagar Lake in Ajmer was built in 1135 CE as a water conservation marvel.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧮 ACTIVITY (12 min)
+Problem: Your village rooftop is 60m². If Alwar receives 450mm annual rainfall, how many litres can you harvest?
+Formula: Volume = Catchment Area × Rainfall × Runoff Coefficient (0.8)
+Answer: 60 × 0.45 × 0.8 = 21,600 litres per year ≈ 21.6 kL
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❓ REVIEW QUESTIONS
+1. Name two traditional water structures used in Rajasthan and explain their difference.
+2. Why is underground storage preferred over open ponds in hot climates?
+3. A rooftop of 80m² in Jodhpur (300mm rainfall) — calculate annual harvest volume.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 HOMEWORK
+Interview an elder in your village about any old water structure nearby. Write 150 words about what you learn.`;
+
+    function generateLesson() {
+      const topic = document.getElementById('lesson-topic').value.trim();
+      if (!topic) { alert('Please enter a lesson topic.'); return; }
+      const btn = document.getElementById('gen-btn');
+      btn.textContent = '⏳ Generating…';
+      btn.disabled = true;
+      document.getElementById('lesson-output-wrap').classList.remove('hidden');
+      document.getElementById('lesson-output').textContent = '';
+      document.getElementById('lesson-tele').textContent = '';
+      const start = Date.now();
+      let i = 0;
+      const t = setInterval(() => {
+        document.getElementById('lesson-output').textContent += lessonMock[i++];
+        if (i >= lessonMock.length) {
+          clearInterval(t);
+          btn.textContent = '✨ Generate Lesson Plan';
+          btn.disabled = false;
+          document.getElementById('lesson-tele').textContent = `${Date.now()-start}ms · ${Math.round(lessonMock.length/4)} tokens`;
+        }
+      }, 10);
+    }
+
+    function exportReport() {
+      alert('📊 Exporting cohort progress report as PDF…\n\n(Full build: generates a structured PDF with student competency matrix, verified scores, and flagged submissions.)');
+    }
+
+    function sendAnnouncement() {
+      const msg = prompt('Announcement message (sent to all 24 students in your hub):');
+      if (msg) alert(`✅ Announcement sent to 24 students.\n\nMessage: "${msg}"\n\nDelivered via push notification (online) and queued in offline sync journal for students currently offline.`);
+    }
+  </script>
+
+</body>
+</html>
