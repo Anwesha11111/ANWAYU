@@ -13,6 +13,9 @@
     .doubt-tag { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
     .doubt-tag.pending { background: rgba(251,191,36,0.12); color: var(--color-warning); }
     .doubt-tag.resolved { background: rgba(74,222,128,0.12); color: var(--color-success); }
+    body { background-image: radial-gradient(ellipse at 20% 0%, rgba(167,139,250,0.15) 0%, transparent 60%); }
+    .sidebar.collapsed { display: none !important; }
+    .app-layout { transition: var(--transition); }
   </style>
 </head>
 <body>
@@ -26,12 +29,13 @@
       <a href="ngo.html" class="nav-link">🤝 NGO</a>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar()">📐 Toggle Profile</button>
       <span class="badge badge-violet">Mrs. Anjali Desai · Mentor</span>
       <span class="dot green"></span>
     </div>
   </nav>
 
-  <div class="app-layout" style="grid-template-columns:260px 1fr;">
+  <div class="app-layout" id="teacher-layout" style="grid-template-columns:260px 1fr;">
 
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
@@ -377,6 +381,17 @@ Interview an elder in your village about any old water structure nearby. Write 1
     function sendAnnouncement() {
       const msg = prompt('Announcement message (sent to all 24 students in your hub):');
       if (msg) alert(`✅ Announcement sent to 24 students.\n\nMessage: "${msg}"\n\nDelivered via push notification (online) and queued in offline sync journal for students currently offline.`);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const layout = document.getElementById('teacher-layout');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else {
+        layout.style.gridTemplateColumns = '260px 1fr';
+      }
     }
   </script>
 

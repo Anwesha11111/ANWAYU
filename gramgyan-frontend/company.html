@@ -13,6 +13,9 @@
     .hash-badge { font-family: var(--font-mono); font-size: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
     .talent-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: var(--transition); }
     .talent-card:hover { border-color: var(--accent-company); transform: translateY(-2px); }
+    body { background-image: radial-gradient(ellipse at 20% 0%, rgba(251,146,60,0.15) 0%, transparent 60%); }
+    .sidebar.collapsed { display: none !important; }
+    .app-layout { transition: var(--transition); }
   </style>
 </head>
 <body>
@@ -25,14 +28,17 @@
       <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
       <a href="company.html" class="nav-link active-c">🏢 Company</a>
       <a href="ngo.html" class="nav-link">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills</a>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar()">📐 Toggle Profile</button>
       <span class="badge badge-orange">Tata Projects Ltd · KYB VERIFIED</span>
       <span class="dot green"></span>
     </div>
   </nav>
 
-  <div class="app-layout" style="grid-template-columns:280px 1fr;">
+  <div class="app-layout" id="company-layout" style="grid-template-columns:280px 1fr;">
 
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
@@ -338,6 +344,17 @@
     // Initial render
     renderTalent(talent);
     renderJobs();
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const layout = document.getElementById('company-layout');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else {
+        layout.style.gridTemplateColumns = '280px 1fr';
+      }
+    }
   </script>
 </body>
 </html>

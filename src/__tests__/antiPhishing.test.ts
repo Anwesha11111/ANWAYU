@@ -1,4 +1,4 @@
-import { sanitizeMessage } from '../../middleware/antiPhishing.middleware';
+import { sanitizeMessage } from '../middleware/antiPhishing.middleware';
 
 describe('Anti-Phishing Sanitizer', () => {
   // ── Phone number redaction ──────────────────────────────────────────────
@@ -54,7 +54,7 @@ describe('Anti-Phishing Sanitizer', () => {
     const { redacted } = sanitizeMessage(
       'Call 9876543210 or email fake@phishing.org — pay at https://razorpay.com/pay/XYZ'
     );
-    const types = redacted.map((r) => r.type);
+    const types = redacted.map((r: any) => r.type);
     expect(types).toContain('phone');
     expect(types).toContain('email');
     expect(types).toContain('checkout_link');

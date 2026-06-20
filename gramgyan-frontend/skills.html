@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GramGyan — Public Student Skills Profile</title>
+  <meta name="description" content="Publicly accessible, cryptographically verified competency portfolio for rural learners. Contact candidates and review solve logs.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .skills-layout { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 24px; }
+    .contact-card { background: var(--bg-card); border: 1px solid var(--accent-student); border-radius: 16px; padding: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .project-item { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; transition: var(--transition); }
+    .project-item:hover { border-color: var(--accent-student); }
+    body {
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.08) 0%, transparent 60%);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo"><div class="nav-orb"></div>GramGyan</a>
+    <div class="nav-links">
+      <a href="student.html" class="nav-link">🎒 Student</a>
+      <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
+      <a href="company.html" class="nav-link">🏢 Company</a>
+      <a href="ngo.html" class="nav-link">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link active-s">🏆 Skills Directory</a>
+    </div>
+    <div>
+      <a href="problems.html" class="btn btn-cyan btn-sm">💻 Go to Challenges</a>
+    </div>
+  </nav>
+
+  <div class="skills-layout">
+    <!-- Student Header & Contact Details -->
+    <div class="contact-card">
+      <div style="display:flex;align-items:center;gap:18px;">
+        <div class="profile-avatar" style="width:60px;height:60px;font-size:1.8rem;background:linear-gradient(135deg,var(--accent-student),#0891b2);">R</div>
+        <div>
+          <h1 style="font-size:1.6rem;font-weight:900;margin-bottom:4px;">Ravi Kumar Sharma</h1>
+          <p style="color:var(--text-secondary);font-size:0.90rem;">📍 Alwar North Hub, Rajasthan · Age 19</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+        <div style="font-size:0.85rem;color:var(--text-primary);">📞 Shared Phone: <strong>+91 98765 43210</strong></div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);">✉️ Email: <strong>ravi.alwar@gramgyan.org.in</strong></div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">Verified Sync Status: <span class="badge badge-green">SYNCED</span></div>
+      </div>
+    </div>
+
+    <!-- Main Profile Breakdown -->
+    <div class="grid-2">
+      <!-- Left: Academic & Topic Competencies -->
+      <div class="card">
+        <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px;color:var(--accent-student);">🌱 Agricultural & STEM Competencies</h2>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-weight:700;font-size:0.9rem;">Organic Farming & Compost</span>
+              <span class="badge badge-green">Verified Level 2</span>
+            </div>
+            <div class="progress-wrap" style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;"><div class="progress-fill" style="width:85%;background:var(--accent-student);height:8px;border-radius:4px;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">
+              <span>Score: 85%</span>
+              <span>Reviewed by Alwar NGO Hub</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-weight:700;font-size:0.9rem;">Drip Irrigation Layouts</span>
+              <span class="badge badge-green">Verified Level 1</span>
+            </div>
+            <div class="progress-wrap" style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;"><div class="progress-fill" style="width:78%;background:var(--accent-student);height:8px;border-radius:4px;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">
+              <span>Score: 78%</span>
+              <span>Reviewed by Rajasthan Rural Trust</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-weight:700;font-size:0.9rem;">Basic Mathematics & Calculus</span>
+              <span class="badge badge-yellow">Review Pending</span>
+            </div>
+            <div class="progress-wrap" style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;"><div class="progress-fill" style="width:62%;background:var(--color-warning);height:8px;border-radius:4px;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">
+              <span>Score: 62%</span>
+              <span>Under review by Mrs. Anjali Desai</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: DSA Problems & Practical Projects Solved -->
+      <div class="card">
+        <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px;color:var(--accent-company);">💻 Solved Coding & Project Challenges</h2>
+        <div id="solved-challenges-container">
+          <!-- Populated by JS/Localstorage -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact & Action Box -->
+    <div class="card" style="text-align:center;">
+      <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:8px;">Interested in recruiting Ravi Kumar Sharma?</h3>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Verified candidates are ready for local apprenticeships, internship programs, or remote vocational training.</p>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button class="btn btn-cyan btn-sm" onclick="alert('Sending matching invitation request to candidate shared phone via SMS...')">✉️ Match & Invite via SMS</button>
+        <button class="btn btn-ghost btn-sm" onclick="alert('Downloading public ledger entry verification hash file...')">🛡️ Download Cryptographic Proof</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Default solved challenges list
+    const defaultSolved = [
+      { title: "Two Sum", diff: "Easy", company: "Google India", verified: true },
+      { title: "Reverse Linked List", diff: "Easy", company: "Microsoft", verified: true }
+    ];
+
+    function renderSolved() {
+      const container = document.getElementById('solved-challenges-container');
+      container.innerHTML = '';
+
+      // Merge defaults with local storage completions
+      let completedChallenges = JSON.parse(localStorage.getItem('completedChallenges') || '[]');
+      const allCompleted = [...defaultSolved, ...completedChallenges];
+
+      if (allCompleted.length === 0) {
+        container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">No solved challenges yet.</div>`;
+        return;
+      }
+
+      allCompleted.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'project-item';
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong style="font-size:0.9rem;color:var(--text-primary);">${c.title}</strong>
+            <span class="badge badge-orange" style="font-size:0.65rem;">${c.diff}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--text-secondary);">
+            <span>Verified by: <strong>${c.company}</strong></span>
+            <span style="color:var(--color-success);">● Active Ledger Checked</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Run
+    renderSolved();
+  </script>
+</body>
+</html>

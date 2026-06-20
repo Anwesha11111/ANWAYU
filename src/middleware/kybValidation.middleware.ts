@@ -86,9 +86,9 @@ export function kybValidationMiddleware(req: Request, res: Response, next: NextF
   }
 
   if (errors.length > 0) {
-    logger.warn('KYB validation failed — dropping connection', {
+    logger.warn({
       gstin, domain, email_domain: email ? extractDomain(email) : null, errors,
-    });
+    }, 'KYB validation failed — dropping connection');
     res.status(403).json({
       success: false,
       error: 'KYB_VALIDATION_FAILED',
@@ -101,6 +101,6 @@ export function kybValidationMiddleware(req: Request, res: Response, next: NextF
 
   // Attach validated fields for downstream controllers
   (req as Request & { kyb: Record<string, string> }).kyb = { gstin, domain, email };
-  logger.info('KYB validation passed', { gstin, domain });
+  logger.info({ gstin, domain }, 'KYB validation passed');
   next();
 }

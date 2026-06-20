@@ -80,11 +80,11 @@ export function antiPhishingMiddleware(req: Request, res: Response, next: NextFu
   req.body._has_warnings    = hasWarnings;
 
   if (hasWarnings) {
-    logger.warn('Anti-phishing: content sanitized', {
-      user_id: (req as unknown as Record<string, unknown>).user?.id,
+    logger.warn({
+      user_id: (req as any).user?.id,
       redacted_count: redacted.length,
       types: redacted.map((r) => r.type),
-    });
+    }, 'Anti-phishing: content sanitized');
   }
 
   next();

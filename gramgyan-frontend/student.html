@@ -4,10 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GramGyan — Student Workspace</title>
-  <meta name="description" content="AI-powered learning workspace for rural students — chat, OCR, STEM reasoning, offline sync, streak tracking.">
+  <meta name="description" content="AI-powered learning workspace for rural students — chat, STEM reasoning, offline sync, streak tracking.">
   <link rel="stylesheet" href="style.css">
   <style>
-    .app-layout { grid-template-columns: 260px 1fr 280px; }
+    .app-layout { grid-template-columns: 260px 1fr 280px; transition: var(--transition); }
+    .sidebar.collapsed { display: none !important; }
+    body {
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(34,211,238,0.15) 0%, transparent 60%);
+    }
+    .video-item, .lesson-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      margin-bottom: 8px;
+    }
+    .video-item:hover, .lesson-item:hover {
+      border-color: var(--accent-student);
+      background: rgba(34,211,238,0.04);
+    }
+    .video-list-container, .lesson-list-container {
+      max-height: 180px;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -20,21 +44,12 @@
       <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
       <a href="company.html" class="nav-link">🏢 Company</a>
       <a href="ngo.html" class="nav-link">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills Profile</a>
     </div>
-    <div class="tele-bar">
-      <div class="tele-item" id="tele-db-wrap">
-        <span class="tele-label">DB</span>
-        <span class="dot green"></span>
-        <span class="tele-value" id="tele-db">10/10</span>
-      </div>
-      <div class="tele-item">
-        <span class="tele-label">Latency</span>
-        <span class="tele-value" id="tele-lat">14ms</span>
-      </div>
-      <div class="tele-item" id="tele-health-btn" style="cursor:pointer;" onclick="openHealthModal()">
-        <span class="dot green" id="tele-dot"></span>
-        <span class="tele-value text-success" id="tele-status">200 OK</span>
-      </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar('left')">📐 Toggle Profile</button>
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar('right')">🛡️ Toggle Security</button>
     </div>
   </nav>
 
@@ -62,10 +77,13 @@
             <span style="color:var(--text-muted);">State</span>
             <span style="font-weight:600;">Rajasthan (RJ)</span>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:12px;">
             <span style="color:var(--text-muted);">Device</span>
             <span style="font-weight:600;">Shared Phone</span>
           </div>
+
+          <a href="skills.html" class="btn btn-cyan btn-xs w-full" style="margin-bottom:12px;display:flex;justify-content:center;">🏆 View Public Skills Page</a>
+
           <!-- Streak -->
           <div class="streak-display">
             <div>
@@ -121,32 +139,78 @@
     <!-- MAIN AREA -->
     <main class="main-area">
 
-      <!-- Media player strip -->
-      <div id="media-rich" class="media-card">
-        <div class="media-preview">
-          <div class="media-badges">
-            <span class="badge badge-cyan">WiFi · 1080p</span>
-            <span class="badge badge-violet">Module 4 · Organic Farming</span>
+      <!-- Suggest Videos & Lesson Plans Grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px;background:var(--bg-card);border-bottom:1px solid var(--border);">
+        <!-- Videos Column -->
+        <div>
+          <h4 style="font-size:0.85rem;color:var(--accent-student);margin-bottom:8px;font-weight:800;">📺 Suggested Video Lessons</h4>
+          <div class="video-list-container">
+            <div class="video-item" onclick="playVideo('Drip Irrigation Basics', 'Module 4 · Learn how to optimize water distribution in dry fields.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Drip Irrigation Basics</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">12 min · Hindi & Telugu</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
+            <div class="video-item" onclick="playVideo('Organic Fertilizer Prep', 'Module 5 · Steps to brew compost tea and nutrient solutions.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Organic Fertilizer Prep</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">8 min · Hindi & Marathi</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
+            <div class="video-item" onclick="playVideo('Solar Grid Maintenance', 'Module 2 · Cleaning dust storms from panels safely.')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Solar Grid Maintenance</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">15 min · Rajasthani & English</span>
+              </div>
+              <span style="font-size:0.9rem;">▶</span>
+            </div>
           </div>
-          <div class="play-btn-ring" onclick="this.textContent='⏸'">▶</div>
         </div>
-        <div class="media-info">
-          <h4>Drip Irrigation & Water Conservation (Interactive Lecture)</h4>
-          <p>HD video tutorial with animated diagrams · Available in Hindi, Telugu, Marathi</p>
+
+        <!-- Lesson Plans Column -->
+        <div>
+          <h4 style="font-size:0.85rem;color:var(--accent-teacher);margin-bottom:8px;font-weight:800;">📝 Interactive Lesson Plans</h4>
+          <div class="lesson-list-container">
+            <div class="lesson-item" onclick="prefill('Show crop rotation plan details for nitrogen fixing legumes')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Legume Nitrogen Rotation</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 2 · 4 steps</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+            <div class="lesson-item" onclick="prefill('How do I calculate rainwater storage capacity of a Kund?')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Rainwater Runoff Calculus</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 3 · Practical math</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+            <div class="lesson-item" onclick="prefill('Explain crop diseases and natural remedies')">
+              <div>
+                <strong style="font-size:0.8rem;display:block;">Natural Pest Management</strong>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Level 1 · Organic chemistry</span>
+              </div>
+              <span style="font-size:0.9rem;">👁️</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- 2G audio-only strip (hidden by default) -->
-      <div id="media-audio" class="audio-only hidden">
-        <div class="audio-wave">
-          <span></span><span></span><span></span><span></span><span></span><span></span>
+      <!-- Media Player Header -->
+      <div id="media-rich" class="media-card" style="border-radius:0;">
+        <div class="media-preview" style="height:120px;">
+          <div class="media-badges">
+            <span class="badge badge-cyan" id="player-network">WiFi · 1080p</span>
+            <span class="badge badge-violet" id="player-title">Module 4 · Organic Farming</span>
+          </div>
+          <div class="play-btn-ring" onclick="alert('Starting stream play...')">▶</div>
         </div>
-        <div style="flex:1;">
-          <div class="badge badge-yellow" style="margin-bottom:6px;">2G · Audio Only (32 kbps)</div>
-          <div style="font-size:0.85rem;font-weight:700;">Module 4 — Organic Farming (Compressed Audio Lecture)</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Video hidden to preserve bandwidth · Text summary loaded below</div>
+        <div class="media-info">
+          <h4 id="player-header">Drip Irrigation & Water Conservation (Interactive Lecture)</h4>
+          <p id="player-desc">HD video tutorial with animated diagrams · Available in Hindi, Telugu, Marathi</p>
         </div>
-        <button class="btn btn-ghost btn-sm">▶ Play</button>
       </div>
 
       <!-- Chat -->
@@ -173,13 +237,6 @@
             <div>
               <div class="model-tab-name">STEM Reason</div>
               <div class="model-tab-meta">Qwen3 Think · 85 Tok/s</div>
-            </div>
-          </div>
-          <div class="model-tab" data-model="vision_ocr" onclick="setModel(this)">
-            <span class="tab-dot o"></span>
-            <div>
-              <div class="model-tab-name">Vision OCR</div>
-              <div class="model-tab-meta">Qwen VL · 20 Tok/s</div>
             </div>
           </div>
         </div>
@@ -210,11 +267,6 @@
 
         <!-- Footer -->
         <div class="chat-footer">
-          <div class="chat-footer-row">
-            <button class="attach-btn" onclick="mockVoice()">🎤 Voice</button>
-            <button class="attach-btn" id="ocr-btn" onclick="document.getElementById('ocr-input').click()">📷 Upload Photo</button>
-            <input type="file" id="ocr-input" accept="image/*" style="display:none;" onchange="handleOCR(this)">
-          </div>
           <div class="chat-footer-row">
             <textarea id="chat-input" placeholder="Ask anything — homework, farming, careers, math…" onkeydown="handleKey(event)"></textarea>
             <button class="btn btn-cyan" onclick="sendMessage()">Send</button>
@@ -277,14 +329,6 @@
             <div class="comp-bar-wrap"><div class="comp-bar" style="width:62%;background:linear-gradient(90deg,var(--color-warning),var(--accent-company));"></div></div>
             <div class="comp-meta"><span>62% · Pending</span><span>⭐⭐⭐</span></div>
           </div>
-          <div class="comp-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <h4>Water Management</h4>
-              <span class="badge badge-cyan">In Progress</span>
-            </div>
-            <div class="comp-bar-wrap"><div class="comp-bar" style="width:40%;background:linear-gradient(90deg,var(--accent-student),#06b6d4);"></div></div>
-            <div class="comp-meta"><span>40%</span><span>⭐⭐</span></div>
-          </div>
         </div>
       </div>
 
@@ -346,6 +390,38 @@
     let blockedCount = 0;
     let maskedCount = 0;
 
+    // ── Sidebar Toggler ──
+    function toggleSidebar(side) {
+      const layout = document.querySelector('.app-layout');
+      const sidebars = document.querySelectorAll('.sidebar');
+      if (side === 'left') {
+        sidebars[0].classList.toggle('collapsed');
+      } else {
+        sidebars[1].classList.toggle('collapsed');
+      }
+      
+      const leftColl = sidebars[0].classList.contains('collapsed');
+      const rightColl = sidebars[1].classList.contains('collapsed');
+      
+      if (leftColl && rightColl) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else if (leftColl) {
+        layout.style.gridTemplateColumns = '1fr 280px';
+      } else if (rightColl) {
+        layout.style.gridTemplateColumns = '260px 1fr';
+      } else {
+        layout.style.gridTemplateColumns = '260px 1fr 280px';
+      }
+    }
+
+    // ── Resource Playback ──
+    function playVideo(title, desc) {
+      document.getElementById('player-header').textContent = title;
+      document.getElementById('player-desc').textContent = desc;
+      document.getElementById('player-title').textContent = title;
+      addLog(`Loaded video tutorial: "${title}"`, 'ok');
+    }
+
     // ── Network ──
     const netConfigs = {
       WiFi: { text: '✅ WiFi — Rich multimedia streaming enabled (1280×720 · 2500 kbps).', audio: false },
@@ -361,12 +437,13 @@
       const cfg = netConfigs[profile];
       document.getElementById('net-status').textContent = cfg.text;
       document.getElementById('media-rich').classList.toggle('hidden', cfg.audio);
-      document.getElementById('media-audio').classList.toggle('hidden', !cfg.audio);
+      document.getElementById('player-network').textContent = `${profile} Mode`;
       addLog(`Network swapped → ${profile}`, 'sys');
     }
 
     // ── Model ──
     function setModel(tab) {
+      document.querySelectorAll('.model-tab').forEach(t => b => b.classList.remove('active'));
       document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       currentModel = tab.dataset.model;
@@ -449,20 +526,19 @@
       stem_reasoning: {
         think: "User wants to solve x² − 5x + 6 = 0. I'll use factoring method. Looking for two numbers that multiply to 6 and add to −5. Those are −2 and −3. So (x−2)(x−3) = 0.",
         answer: "For x² − 5x + 6 = 0, we factor:\n\n(x − 2)(x − 3) = 0\n\n∴ x = 2 or x = 3 ✓\n\nVerification:\n• x=2: 4 − 10 + 6 = 0 ✓\n• x=3: 9 − 15 + 6 = 0 ✓\n\nUsing the quadratic formula as an alternate check:\nx = [5 ± √(25−24)] / 2 = [5 ± 1] / 2 → x = 3 or x = 2 ✓"
-      },
-      vision_ocr: "✅ OCR Complete — Extracted content from your homework image:\n\nQuestion: Find the area of a triangle with base 8cm and height 6cm.\nFormula detected: Area = ½ × base × height\nHandwritten working: ½ × 8 × 6 = 24 cm²\n\nYour answer is CORRECT. The area = 24 cm²."
+      }
     };
 
     function simulateResponse(text, model) {
       const box = document.getElementById('chat-messages');
       const bubble = document.createElement('div');
       bubble.className = 'chat-bubble bot-bubble fade-in';
-      const names = { standard_dialogue:'AI Mentor (Nemotron)', project_guidance:'Project Guide (Ultra 550B)', stem_reasoning:'STEM Reasoner (Qwen3)', vision_ocr:'Vision OCR (Qwen VL)' };
+      const names = { standard_dialogue:'AI Mentor (Nemotron)', project_guidance:'Project Guide (Ultra 550B)', stem_reasoning:'STEM Reasoner (Qwen3)' };
       bubble.innerHTML = `<div class="sender" style="color:var(--accent-student);">${names[model] || 'AI Mentor'}</div><div class="msg-text"><span style="color:var(--text-muted);font-style:italic;">Thinking…</span></div>`;
       box.appendChild(bubble);
       box.scrollTop = box.scrollHeight;
 
-      const delay = model === 'vision_ocr' ? 2000 : model === 'stem_reasoning' ? 1500 : 800;
+      const delay = model === 'stem_reasoning' ? 1500 : 800;
 
       setTimeout(() => {
         const content = bubble.querySelector('.msg-text');
@@ -479,7 +555,6 @@
           const msgs = MOCK_RESPONSES.project_guidance;
           const resp = msgs[Math.floor(Math.random() * msgs.length)];
           typeText(content, resp, 12);
-          // Add task board for project
           setTimeout(() => {
             const tasks = resp.split('\n').filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/,''));
             if (tasks.length > 0) {
@@ -494,11 +569,6 @@
               content.appendChild(board);
             }
           }, tasks => tasks.length * 12 + 1000);
-        } else if (model === 'vision_ocr') {
-          const sk = document.createElement('div');
-          sk.className = 'skeleton';
-          content.appendChild(sk);
-          setTimeout(() => { sk.remove(); typeText(content, MOCK_RESPONSES.vision_ocr, 14); }, 1000);
         } else {
           const msgs = MOCK_RESPONSES.standard_dialogue;
           typeText(content, msgs[Math.floor(Math.random() * msgs.length)], 15);
@@ -544,28 +614,6 @@
       d.innerHTML = '🛡️ <strong>Safety Notice:</strong> This message was filtered. Personal contact details or links have been removed per GramGyan safety guidelines.';
       box.appendChild(d);
       box.scrollTop = box.scrollHeight;
-    }
-
-    // ── OCR Mock ──
-    function handleOCR(input) {
-      if (!input.files[0]) return;
-      addUserBubble(`📷 Attached: <em>${input.files[0].name}</em>`);
-      document.querySelectorAll('.model-tab').forEach(t => t.classList.toggle('active', t.dataset.model === 'vision_ocr'));
-      currentModel = 'vision_ocr';
-      simulateResponse('', 'vision_ocr');
-    }
-
-    // ── Voice Mock ──
-    function mockVoice() {
-      const btn = document.querySelector('[onclick="mockVoice()"]');
-      if (btn.textContent === '🎤 Voice') {
-        btn.textContent = '🔴 Recording…';
-        addLog('Voice buffer started (12-language mode)', 'ok');
-      } else {
-        btn.textContent = '🎤 Voice';
-        addLog('Voice stub saved, processing audio delta…', 'ok');
-        prefill('Explain traditional water harvesting in Rajasthan villages');
-      }
     }
 
     // ── Offline ──
@@ -622,11 +670,6 @@
     // ── SRE ──
     function crashDB() {
       isDbCrashed = true;
-      document.getElementById('tele-dot').className = 'dot red';
-      document.getElementById('tele-status').textContent = '503 ERROR';
-      document.getElementById('tele-status').className = 'tele-value text-danger';
-      document.getElementById('tele-db').textContent = '0/10';
-      document.getElementById('tele-lat').textContent = '---';
       document.getElementById('m-status').textContent = '503 Unhealthy';
       document.getElementById('m-status').className = 'tb-value text-danger';
       document.getElementById('m-db').textContent = '0 / 10';
@@ -636,7 +679,6 @@
 
     function spikeMemory() {
       isMemorySpiked = true;
-      document.getElementById('tele-lat').textContent = '420ms';
       document.getElementById('m-mem').textContent = '97.6% (501 MB)';
       document.getElementById('m-lat').textContent = '420 ms';
       addLog('Memory spike 97.6% — heavy event loops registered', 'warn');
@@ -644,11 +686,6 @@
 
     function restoreSystem() {
       isDbCrashed = isMemorySpiked = false;
-      document.getElementById('tele-dot').className = 'dot green';
-      document.getElementById('tele-status').textContent = '200 OK';
-      document.getElementById('tele-status').className = 'tele-value text-success';
-      document.getElementById('tele-db').textContent = '10/10';
-      document.getElementById('tele-lat').textContent = '14ms';
       document.getElementById('m-status').textContent = '200 OK';
       document.getElementById('m-status').className = 'tb-value text-success';
       document.getElementById('m-db').textContent = '10 / 10';
@@ -666,8 +703,10 @@
       const d = document.createElement('div');
       d.className = type === 'warn' ? 'log-entry-warn' : type === 'ok' ? 'log-entry-ok' : 'log-entry-sys';
       d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-      el.appendChild(d);
-      el.scrollTop = el.scrollHeight;
+      if (el) {
+        el.appendChild(d);
+        el.scrollTop = el.scrollHeight;
+      }
     }
   </script>
 

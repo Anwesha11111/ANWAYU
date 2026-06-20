@@ -16,6 +16,9 @@
     .battery-fill { height: 100%; border-radius: 3px; }
     .cushion-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: var(--transition); }
     .cushion-card:hover { border-color: var(--border-strong); }
+    body { background-image: radial-gradient(ellipse at 20% 0%, rgba(74,222,128,0.15) 0%, transparent 60%); }
+    .sidebar.collapsed { display: none !important; }
+    .app-layout { transition: var(--transition); }
   </style>
 </head>
 <body>
@@ -28,14 +31,17 @@
       <a href="teacher.html" class="nav-link">👩‍🏫 Teacher</a>
       <a href="company.html" class="nav-link">🏢 Company</a>
       <a href="ngo.html" class="nav-link active-n">🤝 NGO</a>
+      <a href="problems.html" class="nav-link">💻 Challenges</a>
+      <a href="skills.html" class="nav-link">🏆 Skills</a>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-ghost btn-xs" onclick="toggleSidebar()">📐 Toggle Profile</button>
       <span class="badge badge-green">Bharat Rural Trust · NGO Super Admin</span>
       <span class="dot green"></span>
     </div>
   </nav>
 
-  <div class="app-layout" style="grid-template-columns:280px 1fr;">
+  <div class="app-layout" id="ngo-layout" style="grid-template-columns:280px 1fr;">
 
     <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
@@ -326,6 +332,17 @@
     // Initial render
     renderHubs();
     renderCushions();
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const layout = document.getElementById('ngo-layout');
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        layout.style.gridTemplateColumns = '1fr';
+      } else {
+        layout.style.gridTemplateColumns = '280px 1fr';
+      }
+    }
   </script>
 </body>
 </html>
