@@ -1,4 +1,4 @@
-import { networkProfileMiddleware, MediaStreamConfig } from '../../middleware/networkProfile.middleware';
+import { networkProfileMiddleware, MediaStreamConfig } from '../middleware/networkProfile.middleware';
 import { Request, Response, NextFunction } from 'express';
 
 function makeNetworkMocks(profile?: string) {

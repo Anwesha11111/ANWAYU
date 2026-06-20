@@ -1,4 +1,4 @@
-import { kybValidationMiddleware } from '../../middleware/kybValidation.middleware';
+import { kybValidationMiddleware } from '../middleware/kybValidation.middleware';
 import { Request, Response, NextFunction } from 'express';
 
 function makeMocks(overrides: Partial<{ headers: Record<string, string>; body: Record<string, string> }> = {}) {
